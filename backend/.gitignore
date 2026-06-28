@@ -1,5 +1,19 @@
-venv/
-__pycache__/
+# Python
+backend/venv/
+**/__pycache__/
 *.pyc
-.env
-uploads/
+
+# Environment variables
+backend/.env
+
+# Uploads
+backend/uploads/
+
+# VS Code
+.vscode/
+
+# Node
+frontend/node_modules/
+
+# macOS
+.DS_Store

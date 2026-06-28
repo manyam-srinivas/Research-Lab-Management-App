@@ -1,8 +1,12 @@
 from flask import Blueprint, request
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
+)
 
-from extensions import db, bcrypt
-from models.user import User
+from app.extensions import db, bcrypt
+from app.models.user import User
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -80,6 +84,30 @@ def login():
     return {
         "status": "success",
         "token": token,
+        "user": {
+            "id": user.id,
+            "name": user.full_name,
+            "email": user.email,
+            "role": user.role
+        }
+    }, 200
+
+@auth_bp.route("/profile", methods=["GET"])
+@jwt_required()
+def profile():
+
+    user_id = get_jwt_identity()
+
+    user = User.query.get(user_id)
+
+    if not user:
+        return {
+            "status": "error",
+            "message": "User not found"
+        }, 404
+
+    return {
+        "status": "success",
         "user": {
             "id": user.id,
             "name": user.full_name,

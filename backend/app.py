@@ -1,11 +1,11 @@
 from flask import Flask
 from flask_cors import CORS
 
-from config import Config
-from extensions import db, jwt, bcrypt
+from backend.app.config import Config
+from backend.app.extensions import db, jwt, bcrypt
 
-from models.user import User
-from models.departments import Department
+from backend.app.models.user import User
+from backend.app.models.departments import Department
 
 app = Flask(__name__)
 
@@ -18,7 +18,7 @@ bcrypt.init_app(app)
 CORS(app)
 
 # Import routes AFTER app creation
-from routes.auth import auth_bp
+from backend.app.routes.auth import auth_bp
 
 app.register_blueprint(
     auth_bp,
