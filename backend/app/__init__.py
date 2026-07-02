@@ -3,11 +3,19 @@ from flask_cors import CORS
 
 from app.config import Config
 from app.extensions import db, jwt, bcrypt
+
+# Import models
+from app.models.user import User
+from app.models.departments import Department
+from app.models.research_group import ResearchGroup
 from app.models.project import Project
+
+# Import blueprints
+from app.routes.auth import auth_bp
 from app.routes.project import project_bp
 
-def create_app():
 
+def create_app():
     app = Flask(__name__)
 
     app.config.from_object(Config)
@@ -18,21 +26,15 @@ def create_app():
 
     CORS(app)
 
-    # Import models
-    from app.models.user import User
-    from app.models.departments import Department
-
-    # Import Blueprints
-    from app.routes.auth import auth_bp
-
     app.register_blueprint(
         auth_bp,
         url_prefix="/api/auth"
     )
+
     app.register_blueprint(
-    project_bp,
-    url_prefix="/api/projects"
-)
+        project_bp,
+        url_prefix="/api/projects"
+    )
 
     @app.route("/")
     def home():
