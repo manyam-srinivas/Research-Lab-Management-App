@@ -9,6 +9,7 @@ from app.models.user import User
 from app.models.departments import Department
 from app.models.research_group import ResearchGroup
 from app.models.project import Project
+from app.routes.research_group import research_group_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -34,6 +35,11 @@ def create_app():
     app.register_blueprint(
         project_bp,
         url_prefix="/api/projects"
+    )
+
+    app.register_blueprint(
+    research_group_bp,
+    url_prefix="/api/research-groups"
     )
 
     @app.route("/")

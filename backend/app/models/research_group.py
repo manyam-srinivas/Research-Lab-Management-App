@@ -6,16 +6,26 @@ class ResearchGroup(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    department_id = db.Column(
-        db.Integer,
-        db.ForeignKey("departments.id")
+    name = db.Column(
+        db.String(150),
+        nullable=False
     )
 
-    group_name = db.Column(db.String(255))
-
     description = db.Column(db.Text)
+
+    department_id = db.Column(
+        db.Integer,
+        db.ForeignKey("departments.id"),
+        nullable=False
+    )
 
     created_by = db.Column(
         db.Integer,
         db.ForeignKey("users.id")
     )
+
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
+    
