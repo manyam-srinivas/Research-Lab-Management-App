@@ -14,6 +14,8 @@ from app.models.project_member import ProjectMember
 from app.routes.project_member import project_member_bp
 from app.models.milestone import Milestone
 from app.routes.milestone import milestone_bp
+from app.models.task import Task
+from app.routes.task import task_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -54,6 +56,10 @@ def create_app():
     app.register_blueprint(
     milestone_bp,
     url_prefix="/api/milestones"
+    )
+    app.register_blueprint(
+    task_bp,
+    url_prefix="/api/tasks"
     )
 
     @app.route("/")
