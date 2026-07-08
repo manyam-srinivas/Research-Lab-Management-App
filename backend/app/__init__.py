@@ -18,6 +18,8 @@ from app.models.task import Task
 from app.routes.task import task_bp
 from app.models.document import Document
 from app.routes.document import document_bp
+from app.models.equipment import Equipment
+from app.routes.equipment import equipment_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -66,6 +68,10 @@ def create_app():
     app.register_blueprint(
     document_bp,
     url_prefix="/api/documents"
+    )
+    app.register_blueprint(
+    equipment_bp,
+    url_prefix="/api/equipment"
     )
 
     @app.route("/")
