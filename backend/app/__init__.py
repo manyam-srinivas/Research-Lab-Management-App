@@ -24,6 +24,8 @@ from app.models.equipment_booking import EquipmentBooking
 from app.routes.equipment_booking import equipment_booking_bp
 from app.models.vendor import Vendor
 from app.routes.vendor import vendor_bp
+from app.models.procurement_request import ProcurementRequest
+from app.routes.procurement import procurement_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -85,6 +87,11 @@ def create_app():
     vendor_bp,
     url_prefix="/api/vendors"
     )
+    app.register_blueprint(
+    procurement_bp,
+    url_prefix="/api/procurement"
+    )
+    
 
     @app.route("/")
     def home():
