@@ -22,6 +22,8 @@ from app.models.equipment import Equipment
 from app.routes.equipment import equipment_bp
 from app.models.equipment_booking import EquipmentBooking
 from app.routes.equipment_booking import equipment_booking_bp
+from app.models.vendor import Vendor
+from app.routes.vendor import vendor_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -78,6 +80,10 @@ def create_app():
     app.register_blueprint(
     equipment_booking_bp,
     url_prefix="/api/equipment-bookings"
+    )
+    app.register_blueprint(
+    vendor_bp,
+    url_prefix="/api/vendors"
     )
 
     @app.route("/")
