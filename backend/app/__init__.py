@@ -30,6 +30,9 @@ from app.models.budget import Budget
 from app.routes.budget import budget_bp
 from app.models.expense import Expense
 from app.routes.expense import expense_bp
+from app.models.notification import Notification
+from app.routes.notification import notification_bp
+
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -103,6 +106,10 @@ def create_app():
     expense_bp,
     url_prefix="/api/expenses"
    )
+    app.register_blueprint(
+    notification_bp,
+    url_prefix="/api/notifications"
+    )
 
     @app.route("/")
     def home():
