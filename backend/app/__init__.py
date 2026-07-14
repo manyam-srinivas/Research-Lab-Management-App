@@ -32,7 +32,8 @@ from app.models.expense import Expense
 from app.routes.expense import expense_bp
 from app.models.notification import Notification
 from app.routes.notification import notification_bp
-
+from app.models.activity_log import ActivityLog
+from app.routes.activity_log import activity_log_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -109,6 +110,10 @@ def create_app():
     app.register_blueprint(
     notification_bp,
     url_prefix="/api/notifications"
+    )
+    app.register_blueprint(
+    activity_log_bp,
+    url_prefix="/api/activity-logs"
     )
 
     @app.route("/")
