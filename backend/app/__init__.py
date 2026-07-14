@@ -34,6 +34,7 @@ from app.models.notification import Notification
 from app.routes.notification import notification_bp
 from app.models.activity_log import ActivityLog
 from app.routes.activity_log import activity_log_bp
+from app.routes.dashboard import dashboard_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -115,7 +116,10 @@ def create_app():
     activity_log_bp,
     url_prefix="/api/activity-logs"
     )
-
+    app.register_blueprint(
+    dashboard_bp,
+    url_prefix="/api/dashboard"
+    )
     @app.route("/")
     def home():
         return {
