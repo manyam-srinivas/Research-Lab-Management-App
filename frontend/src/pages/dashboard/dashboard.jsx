@@ -1,16 +1,16 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
+import WelcomeBanner from "../../components/dashboard/WelcomeBanner";
+import DashboardStats from "../../components/dashboard/DashboardStats";
 
 function Dashboard() {
   return (
     <DashboardLayout>
 
-      <h1 className="text-4xl font-bold text-slate-800">
-        Welcome to RLMS Dashboard 🚀
-      </h1>
+      <WelcomeBanner />
 
-      <p className="mt-4 text-slate-600">
-        This is the dashboard page.
-      </p>
+      <div className="mt-8">
+        <DashboardStats />
+      </div>
 
     </DashboardLayout>
   );
