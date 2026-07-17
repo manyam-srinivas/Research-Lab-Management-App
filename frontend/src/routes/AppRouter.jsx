@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Projects from "../pages/Projects/Projects";
-
+import ResearchGroups from "../pages/ResearchGroups/ResearchGroups";
 import ProtectedRoute from "./ProtectedRoute";
 
 function AppRouter() {
@@ -30,6 +30,10 @@ function AppRouter() {
       </ProtectedRoute>
     }
   />
+  <Route
+  path="/research-groups"
+  element={<ResearchGroups />}
+/>
 
 </Routes>
     </BrowserRouter>

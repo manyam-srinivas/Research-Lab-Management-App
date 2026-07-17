@@ -41,7 +41,7 @@ function Sidebar() {
 <SidebarItem
   icon={<FaUsers />}
   text="Research Groups"
-  to="#"
+  to="/research-groups"
 />
 
 <SidebarItem
