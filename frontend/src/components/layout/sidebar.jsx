@@ -5,7 +5,8 @@ import {
   FaUsers,
   FaTasks,
   FaFlask,
-  FaMoneyBillWave
+  FaMoneyBillWave,
+  FaBuilding
 } from "react-icons/fa";
 
 function Sidebar() {
@@ -31,7 +32,11 @@ function Sidebar() {
   text="Dashboard"
   to="/dashboard"
 />
-
+<SidebarItem
+  icon={<FaBuilding />}
+  text="Departments"
+  to="/departments"
+/>
 <SidebarItem
   icon={<FaProjectDiagram />}
   text="Projects"
