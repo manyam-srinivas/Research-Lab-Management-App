@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { FaTools } from "react-icons/fa";
-import { FaTruck } from "react-icons/fa";
+import { FaTruck } from "react-icons/fa"
+import { FaShoppingCart } from "react-icons/fa";
+import { FaWallet } from "react-icons/fa";
 import {
   FaTachometerAlt,
   FaProjectDiagram,
@@ -57,16 +59,11 @@ function Sidebar() {
   to="#"
 />
 
-<SidebarItem
-  icon={<FaFlask />}
-  text="Equipment"
-  to="#"
-/>
 
 <SidebarItem
-  icon={<FaMoneyBillWave />}
-  text="Budget"
-  to="#"
+  icon={<FaWallet />}
+  text="Budgets"
+  to="/budgets"
 />
 <SidebarItem
   icon={<FaTools />}
@@ -78,6 +75,12 @@ function Sidebar() {
     text="Vendors"
     to="/vendors"
 />
+<SidebarItem
+    icon={<FaShoppingCart />}
+    text="Procurement"
+    to="/procurement"
+/>
+
 
       </nav>
 

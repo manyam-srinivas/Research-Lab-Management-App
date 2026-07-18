@@ -8,6 +8,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Departments from "../pages/Departments/Departments";
 import Equipment from "../pages/Equipment/Equipment";
 import Vendors from "../pages/Vendors/Vendors";
+import Procurement from "../pages/Procurement/Procurement";
+import Budget from "../pages/Budget/Budget";
 
 function AppRouter() {
   return (
@@ -48,6 +50,14 @@ function AppRouter() {
   <Route
   path="/vendors"
   element={<Vendors />}
+  />
+  <Route
+    path="/procurement"
+    element={<Procurement />} 
+  />
+  <Route
+    path="/budgets"
+    element={<Budget />}
   />
 
 </Routes>
