@@ -47,5 +47,10 @@ class ExpenseService:
     @staticmethod
     def delete_expense(expense):
 
-        db.session.delete(expense)
-        db.session.commit()
+     budget = Budget.query.get(expense.budget_id)
+
+     budget.spent_amount -= expense.amount
+     budget.remaining_amount += expense.amount
+
+     db.session.delete(expense)
+     db.session.commit()
