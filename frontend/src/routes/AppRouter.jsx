@@ -10,6 +10,7 @@ import Equipment from "../pages/Equipment/Equipment";
 import Vendors from "../pages/Vendors/Vendors";
 import Procurement from "../pages/Procurement/Procurement";
 import Budget from "../pages/Budget/Budget";
+import Expenses from "../pages/Expense/Expense";
 
 function AppRouter() {
   return (
@@ -58,6 +59,10 @@ function AppRouter() {
   <Route
     path="/budgets"
     element={<Budget />}
+  />
+  <Route
+    path="/expenses"
+    element={<Expenses />}
   />
 
 </Routes>

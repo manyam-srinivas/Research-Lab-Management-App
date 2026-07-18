@@ -3,6 +3,7 @@ import { FaTools } from "react-icons/fa";
 import { FaTruck } from "react-icons/fa"
 import { FaShoppingCart } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
+
 import {
   FaTachometerAlt,
   FaProjectDiagram,
@@ -58,8 +59,6 @@ function Sidebar() {
   text="Tasks"
   to="#"
 />
-
-
 <SidebarItem
   icon={<FaWallet />}
   text="Budgets"
@@ -80,7 +79,11 @@ function Sidebar() {
     text="Procurement"
     to="/procurement"
 />
-
+<SidebarItem
+    icon={<FaMoneyBillWave />}
+    text="Expenses"
+    to="/expenses"
+/>
 
       </nav>
 
