@@ -6,6 +6,7 @@ import Projects from "../pages/Projects/Projects";
 import ResearchGroups from "../pages/ResearchGroups/ResearchGroups";
 import ProtectedRoute from "./ProtectedRoute";
 import Departments from "../pages/Departments/Departments";
+import Equipment from "../pages/Equipment/Equipment";
 
 function AppRouter() {
   return (
@@ -39,6 +40,10 @@ function AppRouter() {
   path="/departments"
   element={<Departments />}
   /> 
+  <Route
+  path="/equipment"
+  element={<Equipment />} 
+  />
 
 </Routes>
     </BrowserRouter>

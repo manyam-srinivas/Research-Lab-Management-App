@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { FaTools } from "react-icons/fa";
 import {
   FaTachometerAlt,
   FaProjectDiagram,
@@ -65,6 +66,11 @@ function Sidebar() {
   icon={<FaMoneyBillWave />}
   text="Budget"
   to="#"
+/>
+<SidebarItem
+  icon={<FaTools />}
+  text="Equipment"
+  to="/equipment"
 />
 
       </nav>
