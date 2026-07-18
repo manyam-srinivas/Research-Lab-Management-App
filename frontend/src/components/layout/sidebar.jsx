@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { FaTools } from "react-icons/fa";
+import { FaTruck } from "react-icons/fa";
 import {
   FaTachometerAlt,
   FaProjectDiagram,
@@ -71,6 +72,11 @@ function Sidebar() {
   icon={<FaTools />}
   text="Equipment"
   to="/equipment"
+/>
+<SidebarItem
+    icon={<FaTruck />}
+    text="Vendors"
+    to="/vendors"
 />
 
       </nav>
