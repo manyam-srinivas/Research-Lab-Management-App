@@ -11,7 +11,7 @@ import Vendors from "../pages/Vendors/Vendors";
 import Procurement from "../pages/Procurement/Procurement";
 import Budget from "../pages/Budget/Budget";
 import Expenses from "../pages/Expense/Expense";
-
+import Documents from "../pages/Documents/Documents";
 function AppRouter() {
   return (
     <BrowserRouter>
@@ -64,6 +64,7 @@ function AppRouter() {
     path="/expenses"
     element={<Expenses />}
   />
+  <Route path="/documents" element={<Documents />} />
 
 </Routes>
     </BrowserRouter>
