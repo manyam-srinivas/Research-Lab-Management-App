@@ -36,6 +36,7 @@ from app.models.activity_log import ActivityLog
 from app.routes.activity_log import activity_log_bp
 from app.routes.dashboard import dashboard_bp
 from app.routes.department import department_bp
+from app.routes.user import user_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -70,7 +71,7 @@ def create_app():
 
     app.register_blueprint(
     project_member_bp,
-    url_prefix="/api/project-members"
+    url_prefix="/api/project_members"
     )
 
     app.register_blueprint(
@@ -124,6 +125,10 @@ def create_app():
     app.register_blueprint(
     department_bp,
     url_prefix="/api/departments"
+    )
+    app.register_blueprint(
+    user_bp,
+    url_prefix="/api/users"
     )
     @app.route("/")
     def home():
