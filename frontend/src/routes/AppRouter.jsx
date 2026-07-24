@@ -16,6 +16,7 @@ import Documents from "../pages/Documents/Documents";
 import ProjectMembers from "../pages/ProjectMembers/ProjectMembers";
 import Tasks from "../pages/tasks/Tasks";
 import EquipmentBookings from "../pages/equipmentBookings/EquipmentBookings";
+import Notifications from "../pages/notifications/Notifications";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -89,8 +90,12 @@ function AppRouter() {
             element={<Tasks />}
           />
           <Route
-            path="equipment-bookings"
+            path="/equipment-bookings"
             element={<EquipmentBookings />}
+          />
+          <Route
+           path="/notifications"
+           element={<Notifications />}
           />
 
         </Route>

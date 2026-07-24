@@ -106,11 +106,17 @@ function Sidebar() {
     text="Equipment Bookings"
     to="/equipment-bookings"
 />
+<SidebarItem
+    icon={<FaFlag />}
+    text="Notifications"
+    to="/notifications"
+/>
       </nav>
 
     </aside>
   );
 }
+
 
 function SidebarItem({ icon, text, to }) {
   return (
