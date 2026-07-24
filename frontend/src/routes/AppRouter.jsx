@@ -14,6 +14,7 @@ import Budget from "../pages/Budget/Budget";
 import Expenses from "../pages/Expense/Expense";
 import Documents from "../pages/Documents/Documents";
 import ProjectMembers from "../pages/ProjectMembers/ProjectMembers";
+import Tasks from "../pages/tasks/Tasks";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -81,6 +82,10 @@ function AppRouter() {
           <Route
             path="/milestones"
             element={<Milestones />}
+          />
+          <Route
+            path="/tasks"
+            element={<Tasks />}
           />
 
         </Route>

@@ -5,6 +5,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
 import { FaFileAlt } from "react-icons/fa";
 import { FaFlag } from "react-icons/fa";
+
 import {
   FaTachometerAlt,
   FaProjectDiagram,
@@ -58,7 +59,7 @@ function Sidebar() {
 <SidebarItem
   icon={<FaTasks />}
   text="Tasks"
-  to="#"
+  to="/tasks"
 />
 <SidebarItem
   icon={<FaWallet />}
