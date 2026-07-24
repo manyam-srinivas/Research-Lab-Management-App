@@ -101,7 +101,11 @@ function Sidebar() {
     text="Milestones"
     to="/milestones"
 />
-
+<SidebarItem
+    icon={<FaTasks />}
+    text="Equipment Bookings"
+    to="/equipment-bookings"
+/>
       </nav>
 
     </aside>
