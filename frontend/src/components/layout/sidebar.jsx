@@ -4,7 +4,7 @@ import { FaTruck } from "react-icons/fa"
 import { FaShoppingCart } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
 import { FaFileAlt } from "react-icons/fa";
-
+import { FaFlag } from "react-icons/fa";
 import {
   FaTachometerAlt,
   FaProjectDiagram,
@@ -94,6 +94,11 @@ function Sidebar() {
     icon={<FaUsers />}
     text="Project Members"
     to="/project-members"
+/>
+<SidebarItem
+    icon={<FaFlag />}
+    text="Milestones"
+    to="/milestones"
 />
 
       </nav>

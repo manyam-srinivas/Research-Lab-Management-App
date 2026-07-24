@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
+
 
 import {
   getProcurementRequests,
@@ -97,7 +97,7 @@ function Procurement() {
   };
 
   return (
-    <DashboardLayout>
+    <>
 
       <div className="flex justify-between items-center mb-8">
 
@@ -249,7 +249,7 @@ function Procurement() {
         onCreated={fetchData}
       />
 
-    </DashboardLayout>
+    </>
   );
 }
 

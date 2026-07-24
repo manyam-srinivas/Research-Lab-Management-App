@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
 
 import {
   getBudgets,
@@ -64,7 +63,7 @@ function Budget() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <div className="flex justify-between items-center mb-8">
 
         <h1 className="text-3xl font-bold">
@@ -202,7 +201,7 @@ function Budget() {
         onCreated={fetchData}
       />
 
-    </DashboardLayout>
+    </>
   );
 }
 

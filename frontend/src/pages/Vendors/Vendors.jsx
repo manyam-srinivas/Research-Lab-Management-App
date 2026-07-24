@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
+
 
 import {
   getVendors,
@@ -53,7 +53,7 @@ function Vendors() {
   };
 
   return (
-    <DashboardLayout>
+    <>
 
       <div className="flex justify-between items-center mb-8">
 
@@ -168,7 +168,7 @@ function Vendors() {
         onVendorCreated={fetchVendors}
       />
 
-    </DashboardLayout>
+    </>
   );
 }
 

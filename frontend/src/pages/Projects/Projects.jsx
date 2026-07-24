@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
+
 import {
   getProjects,
   deleteProject,
@@ -46,7 +46,7 @@ function Projects() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">
           Projects
@@ -159,7 +159,7 @@ function Projects() {
         onProjectCreated={fetchProjects}
       />
 
-    </DashboardLayout>
+    </>
   );
 }
 

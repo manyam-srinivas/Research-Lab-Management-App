@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
+
 
 import {
   getEquipment,
@@ -47,7 +47,7 @@ function Equipment() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <div className="flex justify-between items-center mb-8">
 
         <h1 className="text-3xl font-bold">
@@ -147,7 +147,7 @@ function Equipment() {
         onEquipmentCreated={fetchEquipment}
       />
 
-    </DashboardLayout>
+    </>
   );
 }
 

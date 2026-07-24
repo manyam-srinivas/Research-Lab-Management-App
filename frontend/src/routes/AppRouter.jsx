@@ -2,9 +2,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import DashboardLayout from "../pages/DashboardLayout";
+import Milestones from "../pages/milestones/Milestones";
 import Projects from "../pages/Projects/Projects";
 import ResearchGroups from "../pages/ResearchGroups/ResearchGroups";
-import ProtectedRoute from "./ProtectedRoute";
 import Departments from "../pages/Departments/Departments";
 import Equipment from "../pages/Equipment/Equipment";
 import Vendors from "../pages/Vendors/Vendors";
@@ -13,68 +14,78 @@ import Budget from "../pages/Budget/Budget";
 import Expenses from "../pages/Expense/Expense";
 import Documents from "../pages/Documents/Documents";
 import ProjectMembers from "../pages/ProjectMembers/ProjectMembers";
+
+import ProtectedRoute from "./ProtectedRoute";
+
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
 
-  <Route path="/" element={<Login />} />
+        {/* Public Route */}
+        <Route path="/" element={<Login />} />
 
-  <Route
-    path="/dashboard"
-    element={
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    }
-  />
+        {/* Protected Routes */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
 
-  <Route
-    path="/projects"
-    element={
-      <ProtectedRoute>
-        <Projects />
-      </ProtectedRoute>
-    }
-  />
-  <Route
-  path="/research-groups"
-  element={<ResearchGroups />}
-  />
-  <Route
-  path="/departments"
-  element={<Departments />}
-  /> 
-  <Route
-  path="/equipment"
-  element={<Equipment />} 
-  />
-  <Route
-  path="/vendors"
-  element={<Vendors />}
-  />
-  <Route
-    path="/procurement"
-    element={<Procurement />} 
-  />
-  <Route
-    path="/budgets"
-    element={<Budget />}
-  />
-  <Route
-    path="/expenses"
-    element={<Expenses />}
-  />
-  <Route
-   path="/documents" 
-   element={<Documents />} 
-  />
-  <Route
-   path="/project-members"
-   element={<ProjectMembers />}
-  />
+          <Route path="/projects" element={<Projects />} />
 
-</Routes>
+          <Route path="/departments" element={<Departments />} />
+
+          <Route
+            path="/research-groups"
+            element={<ResearchGroups />}
+          />
+
+          <Route
+            path="/equipment"
+            element={<Equipment />}
+          />
+
+          <Route
+            path="/vendors"
+            element={<Vendors />}
+          />
+
+          <Route
+            path="/procurement"
+            element={<Procurement />}
+          />
+
+          <Route
+            path="/budgets"
+            element={<Budget />}
+          />
+
+          <Route
+            path="/expenses"
+            element={<Expenses />}
+          />
+
+          <Route
+            path="/documents"
+            element={<Documents />}
+          />
+
+          <Route
+            path="/project-members"
+            element={<ProjectMembers />}
+          />
+          <Route
+            path="/milestones"
+            element={<Milestones />}
+          />
+
+        </Route>
+
+      </Routes>
     </BrowserRouter>
   );
 }
