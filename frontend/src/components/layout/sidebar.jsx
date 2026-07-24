@@ -111,6 +111,11 @@ function Sidebar() {
     text="Notifications"
     to="/notifications"
 />
+<SidebarItem
+    icon={<FaFlag />}
+    text="Activity Logs"
+    to="/activity-logs"
+/>
       </nav>
 
     </aside>
