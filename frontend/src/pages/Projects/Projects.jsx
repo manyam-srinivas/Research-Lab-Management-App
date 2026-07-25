@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { hasRole } from "../../utils/permissions";
 
 import {
   getProjects,
@@ -52,12 +52,14 @@ function Projects() {
           Projects
         </h1>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-        >
-          + Add Project
-        </button>
+        {hasRole(...PERMISSIONS.PROJECT_MANAGE) && (
+  <button
+    onClick={() => setIsModalOpen(true)}
+    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+  >
+    + Add Project
+  </button>
+)}
       </div>
 
       <div className="bg-white rounded-xl shadow overflow-hidden">
@@ -76,9 +78,11 @@ function Projects() {
 
               <th className="p-4 text-left">Visibility</th>
 
-              <th className="p-4 text-center">
-                Actions
-              </th>
+              {hasRole(...PERMISSIONS.PROJECT_MANAGE) && (
+  <th className="p-4 text-center">
+    Actions
+  </th>
+)}
 
             </tr>
 
@@ -111,22 +115,22 @@ function Projects() {
                     {project.visibility}
                   </td>
 
-                  <td className="p-4 text-center">
+                  {hasRole(...PERMISSIONS.PROJECT_MANAGE) && (
+  <td className="p-4 text-center">
+    <button
+      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+    >
+      Edit
+    </button>
 
-                    <button
-                      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(project.id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
-
-                  </td>
+    <button
+      onClick={() => handleDelete(project.id)}
+      className="bg-red-600 text-white px-3 py-1 rounded"
+    >
+      Delete
+    </button>
+  </td>
+)}
 
                 </tr>
 
@@ -137,7 +141,7 @@ function Projects() {
               <tr>
 
                 <td
-                  colSpan="5"
+                  colSpan={hasRole(...PERMISSIONS.PROJECT_MANAGE) ? 5 : 4}
                   className="text-center p-8 text-slate-500"
                 >
                   No Projects Found

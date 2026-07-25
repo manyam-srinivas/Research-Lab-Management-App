@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 
 import {
   getDepartments,
@@ -58,12 +58,14 @@ function Departments() {
           Departments
         </h1>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-        >
-          + Add Department
-        </button>
+        {hasRole(...PERMISSIONS.DEPARTMENT_MANAGE) && (
+  <button
+    onClick={() => setIsModalOpen(true)}
+    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+  >
+    + Add Department
+  </button>
+)}
 
       </div>
 
@@ -112,20 +114,24 @@ function Departments() {
 
                   <td className="p-4 text-center">
 
-                    <button
-                      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-                    >
-                      Edit
-                    </button>
+  {hasRole(...PERMISSIONS.DEPARTMENT_MANAGE) && (
+    <>
+      <button
+        className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+      >
+        Edit
+      </button>
 
-                    <button
-                      onClick={() => handleDelete(department.id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+      <button
+        onClick={() => handleDelete(department.id)}
+        className="bg-red-600 text-white px-3 py-1 rounded"
+      >
+        Delete
+      </button>
+    </>
+  )}
 
-                  </td>
+</td>
 
                 </tr>
 

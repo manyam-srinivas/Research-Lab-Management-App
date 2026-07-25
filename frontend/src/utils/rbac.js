@@ -1,0 +1,204 @@
+// ===============================
+// Role Definitions
+// ===============================
+
+export const ROLES = {
+  ADMIN: "Admin",
+  FACULTY: "Faculty",
+  STUDENT: "Student",
+  LAB_STAFF: "Lab Staff",
+  RESEARCH_SCHOLAR: "Research Scholar",
+};
+
+// ===============================
+// Permission Matrix
+// ===============================
+
+export const PERMISSIONS = {
+  // Dashboard
+  DASHBOARD_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  // Departments
+  DEPARTMENT_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.LAB_STAFF,
+    ROLES.STUDENT,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  DEPARTMENT_MANAGE: [
+    ROLES.ADMIN,
+  ],
+
+  // Projects
+  PROJECT_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  PROJECT_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+  ],
+
+  // Research Groups
+  RESEARCH_GROUP_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  RESEARCH_GROUP_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+  ],
+
+  // Equipment
+  EQUIPMENT_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  EQUIPMENT_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.LAB_STAFF,
+  ],
+
+  // Equipment Bookings
+  EQUIPMENT_BOOKING_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  // Documents
+  DOCUMENT_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  DOCUMENT_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+  ],
+
+  // Project Members
+  PROJECT_MEMBER_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  PROJECT_MEMBER_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+  ],
+
+  // Milestones
+  MILESTONE_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  MILESTONE_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+  ],
+
+  // Tasks
+  TASK_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  TASK_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+  ],
+
+  // Vendors
+  VENDOR_VIEW: [
+    ROLES.ADMIN,
+    ROLES.LAB_STAFF,
+  ],
+
+  VENDOR_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.LAB_STAFF,
+  ],
+
+  // Procurement
+  PROCUREMENT_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.LAB_STAFF,
+  ],
+
+  PROCUREMENT_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.LAB_STAFF,
+  ],
+
+  // Budgets
+  BUDGET_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  BUDGET_MANAGE: [
+    ROLES.ADMIN,
+  ],
+
+  // Expenses
+  EXPENSE_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  EXPENSE_MANAGE: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+  ],
+
+  // Notifications
+  NOTIFICATION_VIEW: [
+    ROLES.ADMIN,
+    ROLES.FACULTY,
+    ROLES.STUDENT,
+    ROLES.LAB_STAFF,
+    ROLES.RESEARCH_SCHOLAR,
+  ],
+
+  // Activity Logs
+  ACTIVITY_LOG_VIEW: [
+    ROLES.ADMIN,
+  ],
+};

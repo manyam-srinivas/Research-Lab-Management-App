@@ -5,6 +5,8 @@ import { FaShoppingCart } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
 import { FaFileAlt } from "react-icons/fa";
 import { FaFlag } from "react-icons/fa";
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 
 import {
   FaTachometerAlt,
@@ -34,88 +36,113 @@ function Sidebar() {
       {/* Navigation */}
       <nav className="mt-6">
 
-        <SidebarItem
-  icon={<FaTachometerAlt />}
-  text="Dashboard"
-  to="/dashboard"
-/>
-<SidebarItem
-  icon={<FaBuilding />}
-  text="Departments"
-  to="/departments"
-/>
-<SidebarItem
-  icon={<FaProjectDiagram />}
-  text="Projects"
-  to="/projects"
-/>
+        {hasRole(...PERMISSIONS.DEPARTMENT_MANAGE) && (
+  <SidebarItem
+    icon={<FaBuilding />}
+    text="Departments"
+    to="/departments"
+  />
+)}
+{hasRole(...PERMISSIONS.PROJECT_VIEW) && (
+  <SidebarItem
+    icon={<FaProjectDiagram />}
+    text="Projects"
+    to="/projects"
+  />
+)}
 
-<SidebarItem
-  icon={<FaUsers />}
-  text="Research Groups"
-  to="/research-groups"
-/>
+{hasRole(...PERMISSIONS.RESEARCH_GROUP_VIEW) && (
+  <SidebarItem
+    icon={<FaUsers />}
+    text="Research Groups"
+    to="/research-groups"
+  />
+)}
 
-<SidebarItem
-  icon={<FaTasks />}
-  text="Tasks"
-  to="/tasks"
-/>
-<SidebarItem
-  icon={<FaWallet />}
-  text="Budgets"
-  to="/budgets"
-/>
-<SidebarItem
-  icon={<FaTools />}
-  text="Equipment"
-  to="/equipment"
-/>
-<SidebarItem
+{hasRole(...PERMISSIONS.TASK_VIEW) && (
+  <SidebarItem
+    icon={<FaTasks />}
+    text="Tasks"
+    to="/tasks"
+  />
+)}
+{hasRole(...PERMISSIONS.BUDGET_VIEW) && (
+  <SidebarItem
+    icon={<FaWallet />}
+    text="Budgets"
+    to="/budgets"
+  />
+)}
+{hasRole(...PERMISSIONS.EQUIPMENT_VIEW) && (
+  <SidebarItem
+    icon={<FaTools />}
+    text="Equipment"
+    to="/equipment"
+  />
+)}
+{hasRole(...PERMISSIONS.VENDOR_MANAGE) && (
+  <SidebarItem
     icon={<FaTruck />}
     text="Vendors"
     to="/vendors"
-/>
-<SidebarItem
+  />
+)}
+{hasRole(...PERMISSIONS.PROCUREMENT_VIEW) && (
+  <SidebarItem
     icon={<FaShoppingCart />}
     text="Procurement"
     to="/procurement"
-/>
-<SidebarItem
+  />
+)}
+{hasRole(...PERMISSIONS.EXPENSE_VIEW) && (
+  <SidebarItem
     icon={<FaMoneyBillWave />}
     text="Expenses"
     to="/expenses"
-/>
-<SidebarItem
+  />
+)}
+{hasRole(...PERMISSIONS.DOCUMENT_VIEW) && (
+  <SidebarItem
     icon={<FaFileAlt />}
     text="Documents"
     to="/documents"
-/>
-<SidebarItem
+  />
+)}
+{hasRole(...PERMISSIONS.PROJECT_MEMBER_VIEW) && (
+  <SidebarItem
     icon={<FaUsers />}
     text="Project Members"
     to="/project-members"
-/>
-<SidebarItem
+  />
+)}
+{hasRole(...PERMISSIONS.MILESTONE_VIEW) && (
+  <SidebarItem
     icon={<FaFlag />}
     text="Milestones"
     to="/milestones"
-/>
-<SidebarItem
+  />
+)}
+{hasRole(...PERMISSIONS.EQUIPMENT_BOOKING_VIEW) && (
+  <SidebarItem
     icon={<FaTasks />}
     text="Equipment Bookings"
     to="/equipment-bookings"
-/>
-<SidebarItem
+  />
+)}
+{hasRole(...PERMISSIONS.NOTIFICATION_VIEW) && (
+  <SidebarItem
     icon={<FaFlag />}
     text="Notifications"
     to="/notifications"
-/>
-<SidebarItem
+  />
+)}
+{hasRole("Admin") && (
+  <SidebarItem
     icon={<FaFlag />}
     text="Activity Logs"
     to="/activity-logs"
-/>
+  />
+)}
       </nav>
 
     </aside>

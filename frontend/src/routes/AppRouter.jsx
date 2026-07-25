@@ -19,7 +19,7 @@ import EquipmentBookings from "../pages/equipmentBookings/EquipmentBookings";
 import Notifications from "../pages/notifications/Notifications";
 import ActivityLogs from "../pages/activityLogs/ActivityLogs";
 
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "../routes/ProtectedRoute";
 
 function AppRouter() {
   return (
@@ -41,7 +41,14 @@ function AppRouter() {
 
           <Route path="/projects" element={<Projects />} />
 
-          <Route path="/departments" element={<Departments />} />
+          <Route
+  path="/departments"
+  element={
+    <ProtectedRoute roles={["Admin"]}>
+      <Departments />
+    </ProtectedRoute>
+  }
+/>
 
           <Route
             path="/research-groups"
@@ -50,7 +57,11 @@ function AppRouter() {
 
           <Route
             path="/equipment"
-            element={<Equipment />}
+            element={
+                <ProtectedRoute>
+                  <Equipment />
+                </ProtectedRoute>
+                    }                 
           />
 
           <Route
@@ -100,8 +111,7 @@ function AppRouter() {
           />
           <Route 
            path="/activity-logs" 
-           element={<ActivityLogs />}
-         />
+           element={<ActivityLogs />} />
 
         </Route>
 
