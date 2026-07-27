@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 
 import { getDepartments } from "../../services/departmentService";
 
@@ -83,12 +84,14 @@ function Expenses() {
           Expense Management
         </h1>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-        >
-          + Create Expense
-        </button>
+        {hasRole(...PERMISSIONS.EXPENSE_CREATE) && (
+  <button
+    onClick={() => setIsModalOpen(true)}
+    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+  >
+    + Create Expense
+  </button>
+)}
 
       </div>
 
@@ -120,9 +123,11 @@ function Expenses() {
                 Created At
               </th>
 
-              <th className="p-4 text-center">
-                Actions
-              </th>
+              {hasRole(...PERMISSIONS.EXPENSE_MANAGE) && (
+  <th className="p-4 text-center">
+    Actions
+  </th>
+)}
 
             </tr>
 
@@ -161,18 +166,20 @@ function Expenses() {
                     {expense.created_at}
                   </td>
 
-                  <td className="p-4 text-center">
+                  {hasRole(...PERMISSIONS.EXPENSE_MANAGE) && (
+  <td className="p-4 text-center">
 
-                    <button
-                      onClick={() =>
-                        handleDelete(expense.id)
-                      }
-                      className="bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+    <button
+      onClick={() =>
+        handleDelete(expense.id)
+      }
+      className="bg-red-600 text-white px-3 py-1 rounded"
+    >
+      Delete
+    </button>
 
-                  </td>
+  </td>
+)}
 
                 </tr>
 
@@ -183,7 +190,11 @@ function Expenses() {
               <tr>
 
                 <td
-                  colSpan="6"
+                  colSpan={
+  hasRole(...PERMISSIONS.EXPENSE_MANAGE)
+    ? 6
+    : 5
+}
                   className="text-center p-8 text-slate-500"
                 >
                   No Expenses Found

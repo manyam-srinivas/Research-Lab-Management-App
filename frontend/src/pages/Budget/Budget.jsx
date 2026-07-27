@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 
 import {
   getBudgets,
@@ -70,12 +71,14 @@ function Budget() {
           Budget Management
         </h1>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-        >
-          + Create Budget
-        </button>
+        {hasRole(...PERMISSIONS.BUDGET_MANAGE) && (
+  <button
+    onClick={() => setIsModalOpen(true)}
+    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+  >
+    + Create Budget
+  </button>
+)}
 
       </div>
 
@@ -107,9 +110,11 @@ function Budget() {
                 Remaining
               </th>
 
-              <th className="p-4 text-center">
-                Actions
-              </th>
+              {hasRole(...PERMISSIONS.BUDGET_MANAGE) && (
+  <th className="p-4 text-center">
+    Actions
+  </th>
+)}
 
             </tr>
 
@@ -148,24 +153,26 @@ function Budget() {
                     ₹{budget.remaining_amount}
                   </td>
 
-                  <td className="p-4 text-center">
+                  {hasRole(...PERMISSIONS.BUDGET_MANAGE) && (
+  <td className="p-4 text-center">
 
-                    <button
-                      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-                    >
-                      Edit
-                    </button>
+    <button
+      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+    >
+      Edit
+    </button>
 
-                    <button
-                      onClick={() =>
-                        handleDelete(budget.id)
-                      }
-                      className="bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+    <button
+      onClick={() =>
+        handleDelete(budget.id)
+      }
+      className="bg-red-600 text-white px-3 py-1 rounded"
+    >
+      Delete
+    </button>
 
-                  </td>
+  </td>
+)}
 
                 </tr>
 
@@ -176,7 +183,11 @@ function Budget() {
               <tr>
 
                 <td
-                  colSpan="6"
+                  colSpan={
+  hasRole(...PERMISSIONS.BUDGET_MANAGE)
+    ? 6
+    : 5
+}
                   className="text-center p-8 text-slate-500"
                 >
                   No Budgets Found

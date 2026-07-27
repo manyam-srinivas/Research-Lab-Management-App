@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
+
 import {
   getAllBookings,
   getMyBookings,
@@ -16,8 +17,6 @@ import CreateBookingModal from "./CreateBookingModal";
 export default function EquipmentBookings() {
   const token = localStorage.getItem("token");
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
   const [bookings, setBookings] = useState([]);
   const [equipment, setEquipment] = useState([]);
   const [users, setUsers] = useState([]);
@@ -26,18 +25,15 @@ export default function EquipmentBookings() {
 
   const loadData = async () => {
     try {
-      const [
-        bookingRes,
-        equipmentRes,
-        userRes,
-      ] = await Promise.all([
-        hasRole("Admin", "Lab Staff")
-          ? getAllBookings(token)
-          : getMyBookings(token),
+      const [bookingRes, equipmentRes, userRes] =
+        await Promise.all([
+          hasRole(...PERMISSIONS.BOOKING_APPROVE)
+            ? getAllBookings(token)
+            : getMyBookings(token),
 
-        getEquipment(token),
-        getUsers(token),
-      ]);
+          getEquipment(token),
+          getUsers(token),
+        ]);
 
       setBookings(bookingRes.bookings || []);
       setEquipment(equipmentRes.equipment || []);
@@ -77,12 +73,7 @@ export default function EquipmentBookings() {
 
   const handleStatus = async (id, status) => {
     try {
-      await updateBookingStatus(
-        token,
-        id,
-        status
-      );
-
+      await updateBookingStatus(token, id, status);
       loadData();
     } catch (err) {
       console.error(err);
@@ -90,15 +81,21 @@ export default function EquipmentBookings() {
     }
   };
 
+  const showActions =
+    hasRole(...PERMISSIONS.BOOKING_APPROVE) ||
+    hasRole(...PERMISSIONS.BOOKING_COMPLETE) ||
+    hasRole(...PERMISSIONS.BOOKING_DELETE);
+
   return (
     <div className="p-6">
-
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-2xl font-bold">
           Equipment Bookings
         </h1>
 
-        {hasRole(...PERMISSIONS.BOOKING_MANAGE) && (
+        {hasRole(
+          ...PERMISSIONS.EQUIPMENT_BOOKING_CREATE
+        ) && (
           <button
             onClick={() => setShowModal(true)}
             className="bg-blue-600 text-white px-4 py-2 rounded"
@@ -109,32 +106,45 @@ export default function EquipmentBookings() {
       </div>
 
       <table className="w-full border">
-
         <thead className="bg-gray-100">
-
           <tr>
-            <th className="border p-2">Equipment</th>
-            <th className="border p-2">Requested By</th>
-            <th className="border p-2">Start</th>
-            <th className="border p-2">End</th>
-            <th className="border p-2">Status</th>
-            <th className="border p-2">Actions</th>
-          </tr>
+            <th className="border p-2">
+              Equipment
+            </th>
+            <th className="border p-2">
+              Requested By
+            </th>
+            <th className="border p-2">
+              Start
+            </th>
+            <th className="border p-2">
+              End
+            </th>
+            <th className="border p-2">
+              Status
+            </th>
 
+            {showActions && (
+              <th className="border p-2">
+                Actions
+              </th>
+            )}
+          </tr>
         </thead>
 
         <tbody>
-
           {bookings.map((booking) => (
-
             <tr key={booking.id}>
-
               <td className="border p-2">
-                {equipmentName(booking.equipment_id)}
+                {equipmentName(
+                  booking.equipment_id
+                )}
               </td>
 
               <td className="border p-2">
-                {userName(booking.requested_by)}
+                {userName(
+                  booking.requested_by
+                )}
               </td>
 
               <td className="border p-2">
@@ -149,79 +159,86 @@ export default function EquipmentBookings() {
                 {booking.status}
               </td>
 
-              <td className="border p-2 space-x-2">
+              {showActions && (
+                <td className="border p-2 space-x-2">
+                  {hasRole(
+                    ...PERMISSIONS.BOOKING_APPROVE
+                  ) &&
+                    booking.status ===
+                      "Pending" && (
+                      <>
+                        <button
+                          onClick={() =>
+                            handleStatus(
+                              booking.id,
+                              "Approved"
+                            )
+                          }
+                          className="bg-green-600 text-white px-2 py-1 rounded"
+                        >
+                          Approve
+                        </button>
 
-                {hasRole("Admin", "Lab Staff") &&
-                  booking.status === "Pending" && (
-                    <>
+                        <button
+                          onClick={() =>
+                            handleStatus(
+                              booking.id,
+                              "Rejected"
+                            )
+                          }
+                          className="bg-red-600 text-white px-2 py-1 rounded"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+
+                  {hasRole(
+                    ...PERMISSIONS.BOOKING_COMPLETE
+                  ) &&
+                    booking.status ===
+                      "Approved" && (
                       <button
                         onClick={() =>
                           handleStatus(
                             booking.id,
-                            "Approved"
+                            "Completed"
                           )
                         }
-                        className="bg-green-600 text-white px-2 py-1 rounded"
+                        className="bg-indigo-600 text-white px-2 py-1 rounded"
                       >
-                        Approve
+                        Complete
                       </button>
+                    )}
 
-                      <button
-                        onClick={() =>
-                          handleStatus(
-                            booking.id,
-                            "Rejected"
-                          )
-                        }
-                        className="bg-red-600 text-white px-2 py-1 rounded"
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
-
-                {hasRole(...PERMISSIONS.BOOKING_MANAGE) &&
-                  booking.status === "Approved" && (
+                  {hasRole(
+                    ...PERMISSIONS.BOOKING_DELETE
+                  ) && (
                     <button
                       onClick={() =>
-                        handleStatus(
-                          booking.id,
-                          "Completed"
+                        handleDelete(
+                          booking.id
                         )
                       }
-                      className="bg-indigo-600 text-white px-2 py-1 rounded"
+                      className="bg-gray-700 text-white px-2 py-1 rounded"
                     >
-                      Complete
+                      Delete
                     </button>
                   )}
-
-                {hasRole(...PERMISSIONS.BOOKING_MANAGE) && (
-  <button
-    onClick={() =>
-      handleDelete(booking.id)
-    }
-    className="bg-gray-700 text-white px-2 py-1 rounded"
-  >
-    Delete
-  </button>
-)}
-
-              </td>
-
+                </td>
+              )}
             </tr>
-
           ))}
-
         </tbody>
-
       </table>
 
       <CreateBookingModal
         open={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={() =>
+          setShowModal(false)
+        }
         refresh={loadData}
       />
-
     </div>
   );
 }

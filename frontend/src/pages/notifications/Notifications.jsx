@@ -4,12 +4,13 @@ import {
   markAsRead,
   deleteNotification,
 } from "../../services/notificationService";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 import CreateNotificationModal from "./CreateNotificationModal";
 
 export default function Notifications() {
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  
 
   const [notifications, setNotifications] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -57,14 +58,14 @@ export default function Notifications() {
           Notifications
         </h1>
 
-        {user.role === "Admin" && (
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Create Notification
-          </button>
-        )}
+        {hasRole(...PERMISSIONS.NOTIFICATION_CREATE) && (
+  <button
+    onClick={() => setShowModal(true)}
+    className="bg-blue-600 text-white px-4 py-2 rounded"
+  >
+    Create Notification
+  </button>
+)}
       </div>
 
       <table className="w-full border">
@@ -127,12 +128,14 @@ export default function Notifications() {
                   </button>
                 )}
 
-                <button
-                  onClick={() => handleDelete(notification.id)}
-                  className="bg-red-600 text-white px-2 py-1 rounded"
-                >
-                  Delete
-                </button>
+                {hasRole(...PERMISSIONS.NOTIFICATION_MANAGE) && (
+  <button
+    onClick={() => handleDelete(notification.id)}
+    className="bg-red-600 text-white px-2 py-1 rounded"
+  >
+    Delete
+  </button>
+)}
 
               </td>
 
@@ -144,13 +147,13 @@ export default function Notifications() {
 
       </table>
 
-      {user.role === "Admin" && (
-        <CreateNotificationModal
-          open={showModal}
-          onClose={() => setShowModal(false)}
-          refresh={loadNotifications}
-        />
-      )}
+      {hasRole(...PERMISSIONS.NOTIFICATION_CREATE) && (
+  <CreateNotificationModal
+    open={showModal}
+    onClose={() => setShowModal(false)}
+    refresh={loadNotifications}
+  />
+)}
 
     </div>
   );

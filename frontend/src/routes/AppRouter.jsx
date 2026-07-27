@@ -80,9 +80,13 @@ function AppRouter() {
           />
 
           <Route
-            path="/expenses"
-            element={<Expenses />}
-          />
+  path="/expenses"
+  element={
+    <ProtectedRoute roles={PERMISSIONS.EXPENSE_VIEW}>
+      <Expenses />
+    </ProtectedRoute>
+  }
+/>
 
           <Route
             path="/documents"
@@ -107,9 +111,13 @@ function AppRouter() {
             element={<EquipmentBookings />}
           />
           <Route
-           path="/notifications"
-           element={<Notifications />}
-          />
+  path="/notifications"
+  element={
+    <ProtectedRoute roles={PERMISSIONS.NOTIFICATION_VIEW}>
+      <Notifications />
+    </ProtectedRoute>
+  }
+/>
           <Route 
            path="/activity-logs" 
            element={<ActivityLogs />} />
