@@ -29,7 +29,7 @@ function AppRouter() {
         {/* Public Route */}
         <Route path="/" element={<Login />} />
 
-        {/* Protected Routes */}
+        {/* Protected Routes */}         
         <Route
           element={
             <ProtectedRoute>
@@ -37,97 +37,155 @@ function AppRouter() {
             </ProtectedRoute>
           }
         >
-          <Route path="/dashboard" element={<Dashboard />} />
-
-          <Route path="/projects" element={<Projects />} />
-
-          <Route
-  path="/departments"
-  element={
-    <ProtectedRoute roles={PERMISSIONS.DEPARTMENT_VIEW}>
-      <Departments />
-    </ProtectedRoute>
-  }
-/>
-
-          <Route
-            path="/research-groups"
-            element={<ResearchGroups />}
+          // Dashboard
+          <Route 
+            path="/dashboard" 
+            element={<ProtectedRoute roles={PERMISSIONS.DASHBOARD_VIEW}>
+            <Dashboard />
+          </ProtectedRoute> } 
           />
 
+          // projects
+
+          <Route 
+          path="/projects" 
+          element={<ProtectedRoute roles={PERMISSIONS.PROJECT_VIEW}>
+            <Projects />
+          </ProtectedRoute> }
+          />
+
+          // departments
+          <Route
+              path="/departments"
+              element={
+                 <ProtectedRoute roles={PERMISSIONS.DEPARTMENT_VIEW}>
+                    <Departments />
+                  </ProtectedRoute>
+                      }
+          />
+
+          // research groups
+          <Route
+            path="/research-groups"
+            element={<ProtectedRoute roles={PERMISSIONS.RESEARCH_GROUP_VIEW}>
+              <ResearchGroups />
+            </ProtectedRoute> }
+          />
+
+          // equipment
           <Route
             path="/equipment"
             element={
-                <ProtectedRoute>
+                <ProtectedRoute roles={PERMISSIONS.EQUIPMENT_VIEW}>
                   <Equipment />
                 </ProtectedRoute>
                     }                 
           />
 
+          // vendors
           <Route
             path="/vendors"
-            element={<Vendors />}
+            element={<ProtectedRoute roles={PERMISSIONS.VENDOR_VIEW}>
+              <Vendors />
+            </ProtectedRoute> }
           />
 
+           // procurement
           <Route
             path="/procurement"
-            element={<Procurement />}
+            element={<ProtectedRoute roles={PERMISSIONS.PROCUREMENT_VIEW}>
+              <Procurement />
+            </ProtectedRoute> }
           />
 
+          // Budget
           <Route
             path="/budgets"
-            element={<Budget />}
+            element={<ProtectedRoute roles={PERMISSIONS.BUDGET_VIEW}>
+              <Budget />
+            </ProtectedRoute> }
           />
 
+          // Expenses
           <Route
-  path="/expenses"
-  element={
-    <ProtectedRoute roles={PERMISSIONS.EXPENSE_VIEW}>
-      <Expenses />
-    </ProtectedRoute>
-  }
-/>
+            path="/expenses"
+            element={
+              <ProtectedRoute roles={PERMISSIONS.EXPENSE_VIEW}>
+               <Expenses />
+             </ProtectedRoute>
+                    }
+           />
 
+          // Documents          
           <Route
             path="/documents"
-            element={<Documents />}
+            element={
+              <ProtectedRoute roles={PERMISSIONS.DOCUMENT_VIEW}>
+                <Documents />
+              </ProtectedRoute>
+            }
           />
-
+  
+          // Project Members
           <Route
             path="/project-members"
-            element={<ProjectMembers />}
+            element={
+              <ProtectedRoute roles={PERMISSIONS.PROJECT_MEMBER_VIEW}>
+                <ProjectMembers />
+              </ProtectedRoute>
+            }
           />
           
+          //Milestones
           <Route
-  path="/Milestones"
-  element={
-    <ProtectedRoute roles={PERMISSIONS.MILESTONE_VIEW}>
-      <Milestones />
-    </ProtectedRoute>
-  }
-  />
+           path="/Milestones"
+           element={
+             <ProtectedRoute roles={PERMISSIONS.MILESTONE_VIEW}>
+              <Milestones />
+             </ProtectedRoute>
+                    }
+          />
+
+          // Equipment Bookings
             <Route
             path="/equipment-bookings"
-            element={<EquipmentBookings />}
-          />
+            element={
+             <ProtectedRoute roles={PERMISSIONS.EQUIPMENT_BOOKING_VIEW}>
+               <EquipmentBookings />
+             </ProtectedRoute>
+                    }
+            />
+
+          // Notifications
           <Route
-  path="/notifications"
-  element={
-    <ProtectedRoute roles={PERMISSIONS.NOTIFICATION_VIEW}>
-      <Notifications />
-    </ProtectedRoute>
-  }
-/>
-          <Route 
-           path="/activity-logs" 
-           element={<ActivityLogs />} />
+            path="/notifications"
+             element={
+              <ProtectedRoute roles={PERMISSIONS.NOTIFICATION_VIEW}>
+               <Notifications />
+              </ProtectedRoute>
+                     }
+          />
+
+       // Activity Logs
+
+          <Route
+          path="/activity-logs"
+          element={
+           <ProtectedRoute roles={PERMISSIONS.ACTIVITY_LOG_VIEW}>
+            <ActivityLogs />
+           </ProtectedRoute>
+                  }  
+          />
+
+       // Tasks
            <Route
-  path="/Tasks"
-  element={
-    <ProtectedRoute roles={PERMISSIONS.TASK_VIEW}>
-      <Tasks />
-    </ProtectedRoute>
-  } />
+            path="/Tasks"
+            element={
+             <ProtectedRoute roles={PERMISSIONS.TASK_VIEW}>
+              <Tasks />
+            </ProtectedRoute>
+              }
+           />
 
         </Route>
 

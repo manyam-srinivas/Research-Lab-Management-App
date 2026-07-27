@@ -1,10 +1,15 @@
-import { useState } from "react";
-import { createMilestone } from "../../services/milestoneService";
+import { useEffect, useState } from "react";
+import {
+  createMilestone,
+  updateMilestone,
+} from "../../services/milestoneService";
 
 function CreateMilestoneModal({
   isOpen,
   onClose,
   projectId,
+  milestone,
+  isEditing,
   onMilestoneCreated,
 }) {
   const [formData, setFormData] = useState({
@@ -14,6 +19,28 @@ function CreateMilestoneModal({
     status: "Pending",
     completion_percentage: 0,
   });
+  useEffect(() => {
+  if (!isOpen) return;
+
+  if (isEditing && milestone) {
+    setFormData({
+      title: milestone.title || "",
+      description: milestone.description || "",
+      due_date: milestone.due_date || "",
+      status: milestone.status || "Pending",
+      completion_percentage:
+        milestone.completion_percentage ?? 0,
+    });
+  } else {
+    setFormData({
+      title: "",
+      description: "",
+      due_date: "",
+      status: "Pending",
+      completion_percentage: 0,
+    });
+  }
+}, [isOpen, isEditing, milestone]);
 
   if (!isOpen) return null;
 
@@ -25,38 +52,64 @@ function CreateMilestoneModal({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await createMilestone(token, {
-        ...formData,
-        project_id: projectId,
-      });
+    const payload = {
+      ...formData,
+      project_id: projectId,
+      completion_percentage: Number(
+        formData.completion_percentage
+      ),
+    };
 
-      setFormData({
-        title: "",
-        description: "",
-        due_date: "",
-        status: "Pending",
-        completion_percentage: 0,
-      });
+    if (isEditing) {
+      await updateMilestone(
+        token,
+        milestone.id,
+        payload
+      );
 
-      onMilestoneCreated();
-      onClose();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to create milestone");
+      alert("Milestone updated successfully!");
+    } else {
+      await createMilestone(
+        token,
+        payload
+      );
+
+      alert("Milestone created successfully!");
     }
-  };
+
+    setFormData({
+      title: "",
+      description: "",
+      due_date: "",
+      status: "Pending",
+      completion_percentage: 0,
+    });
+
+    onMilestoneCreated();
+    onClose();
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      isEditing
+        ? "Failed to update milestone"
+        : "Failed to create milestone"
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-xl p-6">
 
         <h2 className="text-2xl font-bold mb-6">
-          Create Milestone
+          {isEditing ? "Edit Milestone" : "Create Milestone"}
         </h2>
 
         <form
@@ -134,7 +187,7 @@ function CreateMilestoneModal({
               type="submit"
               className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
             >
-              Create
+              {isEditing ? "Update" : "Create"}
             </button>
           </div>
         </form>

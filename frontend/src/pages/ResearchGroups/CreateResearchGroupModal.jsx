@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 
-import { createResearchGroup } from "../../services/researchGroupService";
+import {
+  createResearchGroup,
+  updateResearchGroup,
+} from "../../services/researchGroupService";
 import { getDepartments } from "../../services/departmentService";
 
 function CreateResearchGroupModal({
   isOpen,
   onClose,
   onGroupCreated,
+  group,
+  isEditing,
 }) {
 
   const [departments, setDepartments] = useState([]);
@@ -18,61 +23,89 @@ function CreateResearchGroupModal({
   });
 
   useEffect(() => {
-    if (!isOpen) return;
+  if (!isOpen) return;
 
-    const fetchDepartments = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const response = await getDepartments(token);
-
-        setDepartments(response.departments);
-
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchDepartments();
-
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async () => {
+  const fetchDepartments = async () => {
     try {
       const token = localStorage.getItem("token");
+      const response = await getDepartments(token);
 
-      await createResearchGroup(token, {
-        ...formData,
-        department_id: Number(formData.department_id),
-      });
+      setDepartments(response.departments);
 
-      alert("Research Group created successfully!");
-
-      setFormData({
-        name: "",
-        description: "",
-        department_id: "",
-      });
-
-      onClose();
-      onGroupCreated();
+      if (isEditing && group) {
+        setFormData({
+          name: group.name || "",
+          description: group.description || "",
+          department_id: String(group.department_id || ""),
+        });
+      } else {
+        setFormData({
+          name: "",
+          description: "",
+          department_id: "",
+        });
+      } 
 
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Failed to create research group"
-      );
+      console.error(error);
     }
   };
+
+  fetchDepartments();
+
+}, [isOpen, isEditing, group]);
+  const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+  if (!isOpen) return null;
+
+  const handleSubmit = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const payload = {
+      ...formData,
+      department_id: Number(formData.department_id),
+    };
+
+    if (isEditing) {
+      await updateResearchGroup(
+        token,
+        group.id,
+        payload
+      );
+
+      alert("Research Group updated successfully!");
+    } else {
+      await createResearchGroup(
+        token,
+        payload
+      );
+
+      alert("Research Group created successfully!");
+    }
+
+    setFormData({
+      name: "",
+      description: "",
+      department_id: "",
+    });
+
+    onClose();
+    onGroupCreated();
+
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update research group"
+        : "Failed to create research group")
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -82,7 +115,9 @@ function CreateResearchGroupModal({
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            Create Research Group
+            {isEditing
+  ? "Edit Research Group"
+  : "Create Research Group"}
           </h2>
 
           <button onClick={onClose}>
@@ -146,7 +181,9 @@ function CreateResearchGroupModal({
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Research Group
+            {isEditing
+  ? "Update Research Group"
+  : "Create Research Group"}
           </button>
 
         </div>

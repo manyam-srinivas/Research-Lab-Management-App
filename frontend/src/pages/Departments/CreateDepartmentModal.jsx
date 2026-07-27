@@ -1,16 +1,33 @@
-import { useState } from "react";
-import { createDepartment } from "../../services/departmentService";
+import { useState, useEffect } from "react";
+import {
+  createDepartment,
+  updateDepartment,
+} from "../../services/departmentService";
 
 function CreateDepartmentModal({
   isOpen,
   onClose,
   onDepartmentCreated,
+  department,
+  isEditing,
 }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   });
-
+  useEffect(() => {
+  if (isEditing && department) {
+    setFormData({
+      name: department.name || "",
+      description: department.description || "",
+    });
+  } else {
+    setFormData({
+      name: "",
+      description: "",
+    });
+  }
+}, [department, isEditing]);
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -21,28 +38,43 @@ function CreateDepartmentModal({
   };
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await createDepartment(token, formData);
+    if (isEditing) {
+      await updateDepartment(
+        token,
+        department.id,
+        formData
+      );
+
+      alert("Department updated successfully!");
+    } else {
+      await createDepartment(
+        token,
+        formData
+      );
 
       alert("Department created successfully!");
-
-      setFormData({
-        name: "",
-        description: "",
-      });
-
-      onClose();
-      onDepartmentCreated();
-
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Failed to create department"
-      );
     }
-  };
+
+    setFormData({
+      name: "",
+      description: "",
+    });
+
+    onClose();
+    onDepartmentCreated();
+
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update department"
+        : "Failed to create department")
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -52,7 +84,9 @@ function CreateDepartmentModal({
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            Create Department
+            {isEditing
+  ? "Edit Department"
+  : "Create Department"}
           </h2>
 
           <button onClick={onClose}>
@@ -95,7 +129,9 @@ function CreateDepartmentModal({
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Department
+            {isEditing
+  ? "Update Department"
+  : "Create Department"}
           </button>
 
         </div>

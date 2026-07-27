@@ -15,7 +15,8 @@ function ResearchGroups() {
   const [groups, setGroups] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -65,7 +66,11 @@ function ResearchGroups() {
       alert("Failed to delete research group");
     }
   };
-
+  const handleEdit = (group) => {
+  setSelectedGroup(group);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   return (
     <>
       <div className="flex justify-between items-center mb-8">
@@ -142,10 +147,11 @@ function ResearchGroups() {
   <td className="p-4 text-center">
 
     <button
-      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-    >
-      Edit
-    </button>
+  onClick={() => handleEdit(group)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
     <button
       onClick={() => handleDelete(group.id)}
@@ -183,10 +189,16 @@ function ResearchGroups() {
       </div>
 
       <CreateResearchGroupModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onGroupCreated={fetchData}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedGroup(null);
+    setIsEditing(false);
+  }}
+  onGroupCreated={fetchData}
+  group={selectedGroup}
+  isEditing={isEditing}
+/>
 
     </>
   );

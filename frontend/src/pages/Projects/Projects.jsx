@@ -12,7 +12,13 @@ import CreateProjectModal from "./CreateProjectModal";
 function Projects() {
   const [projects, setProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const handleEdit = (project) => {
+  setSelectedProject(project);
+  setIsEditing(true);
+  setIsModalOpen(true);
+  };
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -119,10 +125,11 @@ function Projects() {
                   {hasRole(...PERMISSIONS.PROJECT_MANAGE) && (
   <td className="p-4 text-center">
     <button
-      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-    >
-      Edit
-    </button>
+  onClick={() => handleEdit(project)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
     <button
       onClick={() => handleDelete(project.id)}
@@ -159,10 +166,16 @@ function Projects() {
       </div>
 
       <CreateProjectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onProjectCreated={fetchProjects}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+    setIsEditing(false);
+  }}
+  onProjectCreated={fetchProjects}
+  project={selectedProject}
+  isEditing={isEditing}
+/>
 
     </>
   );

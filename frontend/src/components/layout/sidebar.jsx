@@ -34,7 +34,16 @@ function Sidebar() {
       </div>
 
       {/* Navigation */}
+      
       <nav className="mt-6">
+
+        {hasRole(...PERMISSIONS.DASHBOARD_VIEW) && (
+  <SidebarItem
+    icon={<FaTachometerAlt />}
+    text="Dashboard"
+    to="/dashboard"
+  />
+)}
 
         {hasRole(...PERMISSIONS.DEPARTMENT_MANAGE) && (
   <SidebarItem

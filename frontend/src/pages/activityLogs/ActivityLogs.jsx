@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import activityLogService from "../../services/activityLogService";
 import CreateActivityLogModal from "./CreateActivityLogModal";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 const ActivityLogs = () => {
   const [logs, setLogs] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -41,12 +42,14 @@ const ActivityLogs = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Activity Logs</h1>
 
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Create Activity Log
-        </button>
+        {hasRole(...PERMISSIONS.ACTIVITY_LOG_MANAGE) && (
+  <button
+    onClick={() => setShowModal(true)}
+    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+  >
+    Create Activity Log
+  </button>
+)}
       </div>
 
       {loading ? (
@@ -63,7 +66,9 @@ const ActivityLogs = () => {
                 <th className="border p-2">Entity ID</th>
                 <th className="border p-2">IP Address</th>
                 <th className="border p-2">Created At</th>
-                <th className="border p-2">Actions</th>
+                {hasRole(...PERMISSIONS.ACTIVITY_LOG_MANAGE) && (
+  <th className="border p-2">Actions</th>
+)}
               </tr>
             </thead>
 
@@ -71,7 +76,11 @@ const ActivityLogs = () => {
               {logs.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="8"
+                    colSpan={
+  hasRole(...PERMISSIONS.ACTIVITY_LOG_MANAGE)
+    ? 8
+    : 7
+}
                     className="text-center p-4"
                   >
                     No activity logs found.
@@ -88,14 +97,16 @@ const ActivityLogs = () => {
                     <td className="border p-2">{log.ip_address}</td>
                     <td className="border p-2">{log.created_at}</td>
 
-                    <td className="border p-2">
-                      <button
-                        onClick={() => handleDelete(log.id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
+                    {hasRole(...PERMISSIONS.ACTIVITY_LOG_MANAGE) && (
+  <td className="border p-2">
+    <button
+      onClick={() => handleDelete(log.id)}
+      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+    >
+      Delete
+    </button>
+  </td>
+)}
                   </tr>
                 ))
               )}
@@ -104,15 +115,13 @@ const ActivityLogs = () => {
         </div>
       )}
 
-      {showModal && (
-        <CreateActivityLogModal
-          onClose={() => setShowModal(false)}
-          onSuccess={() => {
-            setShowModal(false);
-            fetchLogs();
-          }}
-        />
-      )}
+      {hasRole(...PERMISSIONS.ACTIVITY_LOG_VIEW) && (
+  <SidebarItem
+    icon={<FaFlag />}
+    text="Activity Logs"
+    to="/activity-logs"
+  />
+)}
     </div>
   );
 };

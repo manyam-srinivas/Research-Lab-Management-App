@@ -12,7 +12,8 @@ import CreateDepartmentModal from "./CreateDepartmentModal";
 function Departments() {
   const [departments, setDepartments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const fetchDepartments = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -49,7 +50,11 @@ function Departments() {
       alert("Failed to delete department");
     }
   };
-
+  const handleEdit = (department) => {
+  setSelectedDepartment(department);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   return (
     <>
       <div className="flex justify-between items-center mb-8">
@@ -117,10 +122,11 @@ function Departments() {
   {hasRole(...PERMISSIONS.DEPARTMENT_MANAGE) && (
     <>
       <button
-        className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-      >
-        Edit
-      </button>
+  onClick={() => handleEdit(department)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
       <button
         onClick={() => handleDelete(department.id)}
@@ -159,10 +165,16 @@ function Departments() {
       </div>
 
       <CreateDepartmentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onDepartmentCreated={fetchDepartments}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedDepartment(null);
+    setIsEditing(false);
+  }}
+  onDepartmentCreated={fetchDepartments}
+  department={selectedDepartment}
+  isEditing={isEditing}
+/>
 
     </>
   );

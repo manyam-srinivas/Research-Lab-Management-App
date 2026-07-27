@@ -14,7 +14,8 @@ function Milestones() {
   const [selectedProject, setSelectedProject] = useState("");
   const [milestones, setMilestones] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedMilestone, setSelectedMilestone] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -55,7 +56,11 @@ function Milestones() {
 
     fetchMilestones(id);
   };
-
+  const handleEdit = (milestone) => {
+  setSelectedMilestone(milestone);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this milestone?")) return;
 
@@ -187,10 +192,11 @@ function Milestones() {
                   {hasRole(...PERMISSIONS.MILESTONE_MANAGE) && (
   <td className="p-4 text-center">
     <button
-      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-    >
-      Edit
-    </button>
+  onClick={() => handleEdit(milestone)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
     <button
       onClick={() => handleDelete(milestone.id)}
@@ -221,13 +227,19 @@ function Milestones() {
       </div>
 
       <CreateMilestoneModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        projectId={selectedProject}
-        onMilestoneCreated={() =>
-          fetchMilestones(selectedProject)
-        }
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedMilestone(null);
+    setIsEditing(false);
+  }}
+  projectId={selectedProject}
+  milestone={selectedMilestone}
+  isEditing={isEditing}
+  onMilestoneCreated={() =>
+    fetchMilestones(selectedProject)
+  }
+/>
     </>
   );
 }

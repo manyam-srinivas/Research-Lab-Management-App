@@ -1,7 +1,16 @@
-import { useState } from "react";
-import { createProject } from "../../services/projectService";
+import { useState, useEffect } from "react";
+import {
+  createProject,
+  updateProject,
+} from "../../services/projectService";
 
-function CreateProjectModal({ isOpen, onClose, onProjectCreated }) {
+function CreateProjectModal({
+  isOpen,
+  onClose,
+  onProjectCreated,
+  project,
+  isEditing,
+}) {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -11,44 +20,74 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }) {
     end_date: "",
     research_group_id: "1",
   });
+  useEffect(() => {
+  if (isEditing && project) {
+    setFormData({
+      title: project.title || "",
+      description: project.description || "",
+      priority: project.priority || "Medium",
+      visibility: project.visibility || "Private",
+      start_date: project.start_date || "",
+      end_date: project.end_date || "",
+      research_group_id: project.research_group_id || "1",
+    });
+  } else {
+    setFormData({
+      title: "",
+      description: "",
+      priority: "Medium",
+      visibility: "Private",
+      start_date: "",
+      end_date: "",
+      research_group_id: "1",
+    });
+  }
+}, [project, isEditing]);
 
   if (!isOpen) return null;
-
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
+    if (isEditing) {
+      await updateProject(token, project.id, formData);
+
+      alert("Project updated successfully!");
+    } else {
       await createProject(token, formData);
 
       alert("Project created successfully!");
-
-      setFormData({
-        title: "",
-        description: "",
-        priority: "Medium",
-        visibility: "Private",
-        start_date: "",
-        end_date: "",
-        research_group_id: "1",
-      });
-
-      onClose();
-      onProjectCreated();
-
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Failed to create project"
-      );
     }
-  };
+
+    setFormData({
+      title: "",
+      description: "",
+      priority: "Medium",
+      visibility: "Private",
+      start_date: "",
+      end_date: "",
+      research_group_id: "1",
+    });
+
+    onClose();
+    onProjectCreated();
+
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update project"
+        : "Failed to create project")
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -58,8 +97,8 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }) {
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            Create Project
-          </h2>
+  {isEditing ? "Edit Project" : "Create Project"}
+</h2>
 
           <button onClick={onClose}>
             ✕
@@ -141,7 +180,7 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }) {
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Project
+            {isEditing ? "Update Project" : "Create Project"}
           </button>
 
         </div>
