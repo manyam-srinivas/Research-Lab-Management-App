@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 import { getProjects } from "../../services/projectService";
 import {
   getProjectMilestones,
@@ -75,13 +76,15 @@ function Milestones() {
           Milestones
         </h1>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          disabled={!selectedProject}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-        >
-          + Add Milestone
-        </button>
+        {hasRole(...PERMISSIONS.MILESTONE_MANAGE) && (
+  <button
+    onClick={() => setIsModalOpen(true)}
+    disabled={!selectedProject}
+    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+  >
+    + Add Milestone
+  </button>
+)}
       </div>
 
       <div className="bg-white rounded-xl shadow p-6 mb-6">
@@ -129,9 +132,11 @@ function Milestones() {
                 Completion %
               </th>
 
-              <th className="p-4 text-center">
-                Actions
-              </th>
+              {hasRole(...PERMISSIONS.MILESTONE_MANAGE) && (
+  <th className="p-4 text-center">
+    Actions
+  </th>
+)}
             </tr>
           </thead>
 
@@ -179,28 +184,32 @@ function Milestones() {
   </p>
 </td>
 
-                  <td className="p-4 text-center">
-                    <button
-                      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-                    >
-                      Edit
-                    </button>
+                  {hasRole(...PERMISSIONS.MILESTONE_MANAGE) && (
+  <td className="p-4 text-center">
+    <button
+      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+    >
+      Edit
+    </button>
 
-                    <button
-                      onClick={() =>
-                        handleDelete(milestone.id)
-                      }
-                      className="bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
-                  </td>
+    <button
+      onClick={() => handleDelete(milestone.id)}
+      className="bg-red-600 text-white px-3 py-1 rounded"
+    >
+      Delete
+    </button>
+  </td>
+)}
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan="5"
+                  colSpan={
+  hasRole(...PERMISSIONS.MILESTONE_MANAGE)
+    ? 5
+    : 4
+}
                   className="text-center p-8 text-slate-500"
                 >
                   No Milestones Found

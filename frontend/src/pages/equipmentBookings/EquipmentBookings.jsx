@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 import {
   getAllBookings,
   getMyBookings,
@@ -29,7 +31,7 @@ export default function EquipmentBookings() {
         equipmentRes,
         userRes,
       ] = await Promise.all([
-        user.role === "Admin" || user.role === "Lab Staff"
+        hasRole("Admin", "Lab Staff")
           ? getAllBookings(token)
           : getMyBookings(token),
 
@@ -96,12 +98,14 @@ export default function EquipmentBookings() {
           Equipment Bookings
         </h1>
 
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Book Equipment
-        </button>
+        {hasRole(...PERMISSIONS.BOOKING_MANAGE) && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Book Equipment
+          </button>
+        )}
       </div>
 
       <table className="w-full border">
@@ -147,8 +151,7 @@ export default function EquipmentBookings() {
 
               <td className="border p-2 space-x-2">
 
-                {(user.role === "Admin" ||
-                  user.role === "Lab Staff") &&
+                {hasRole("Admin", "Lab Staff") &&
                   booking.status === "Pending" && (
                     <>
                       <button
@@ -177,8 +180,7 @@ export default function EquipmentBookings() {
                     </>
                   )}
 
-                {(user.role === "Admin" ||
-                  user.role === "Lab Staff") &&
+                {hasRole(...PERMISSIONS.BOOKING_MANAGE) &&
                   booking.status === "Approved" && (
                     <button
                       onClick={() =>
@@ -193,14 +195,16 @@ export default function EquipmentBookings() {
                     </button>
                   )}
 
-                <button
-                  onClick={() =>
-                    handleDelete(booking.id)
-                  }
-                  className="bg-gray-700 text-white px-2 py-1 rounded"
-                >
-                  Delete
-                </button>
+                {hasRole(...PERMISSIONS.BOOKING_MANAGE) && (
+  <button
+    onClick={() =>
+      handleDelete(booking.id)
+    }
+    className="bg-gray-700 text-white px-2 py-1 rounded"
+  >
+    Delete
+  </button>
+)}
 
               </td>
 

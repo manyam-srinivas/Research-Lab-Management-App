@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaUpload, FaDownload, FaTrash } from "react-icons/fa";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 import {
   getProjectDocuments,
   deleteDocument,
@@ -111,21 +112,22 @@ const Documents = () => {
           Documents
         </h1>
 
-        <button
-          onClick={() => {
-            if (!selectedProject) {
-              alert("Please select a project first");
-              return;
-            }
+        {hasRole(...PERMISSIONS.DOCUMENT_MANAGE) && (
+  <button
+    onClick={() => {
+      if (!selectedProject) {
+        alert("Please select a project first");
+        return;
+      }
 
-            setIsModalOpen(true);
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <FaUpload />
-
-          Upload Document
-        </button>
+      setIsModalOpen(true);
+    }}
+    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+  >
+    <FaUpload />
+    Upload Document
+  </button>
+)}
 
       </div>
 
@@ -166,7 +168,15 @@ const Documents = () => {
               <th className="p-3 text-left">Version</th>
               <th className="p-3 text-left">Uploaded By</th>
               <th className="p-3 text-left">Created</th>
-              <th className="p-3 text-center">Actions</th>
+              <th className="p-3 text-center">
+  Download
+</th>
+
+{hasRole(...PERMISSIONS.DOCUMENT_MANAGE) && (
+  <th className="p-3 text-center">
+    Delete
+  </th>
+)}
             </tr>
 
           </thead>
@@ -177,7 +187,11 @@ const Documents = () => {
 
               <tr>
                 <td
-                  colSpan="7"
+                  colSpan={
+  hasRole(...PERMISSIONS.DOCUMENT_MANAGE)
+    ? 7
+    : 6
+}
                   className="text-center p-6"
                 >
                   Loading...
@@ -188,7 +202,11 @@ const Documents = () => {
 
               <tr>
                 <td
-                  colSpan="7"
+                  colSpan={
+  hasRole(...PERMISSIONS.DOCUMENT_MANAGE)
+    ? 7
+    : 6
+}
                   className="text-center p-6"
                 >
                   No documents found
@@ -227,25 +245,27 @@ const Documents = () => {
                     {new Date(doc.created_at).toLocaleDateString()}
                   </td>
 
-                  <td className="p-3 flex justify-center gap-3">
+                  <td className="p-3 text-center">
+  <button
+    onClick={() =>
+      handleDownload(doc.id, doc.file_name)
+    }
+    className="text-blue-600"
+  >
+    <FaDownload />
+  </button>
+</td>
 
-                    <button
-                      onClick={() =>
-                        handleDownload(doc.id, doc.file_name)
-                      }
-                      className="text-blue-600"
-                    >
-                      <FaDownload />
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(doc.id)}
-                      className="text-red-600"
-                    >
-                      <FaTrash />
-                    </button>
-
-                  </td>
+{hasRole(...PERMISSIONS.DOCUMENT_MANAGE) && (
+  <td className="p-3 text-center">
+    <button
+      onClick={() => handleDelete(doc.id)}
+      className="text-red-600"
+    >
+      <FaTrash />
+    </button>
+  </td>
+)}
 
                 </tr>
 

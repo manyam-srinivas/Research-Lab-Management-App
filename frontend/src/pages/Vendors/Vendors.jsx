@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 
 
 import {
@@ -61,12 +62,14 @@ function Vendors() {
           Vendors
         </h1>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-        >
-          + Add Vendor
-        </button>
+        {hasRole(...PERMISSIONS.VENDOR_MANAGE) && (
+  <button
+    onClick={() => setIsModalOpen(true)}
+    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+  >
+    + Add Vendor
+  </button>
+)}
 
       </div>
 
@@ -83,7 +86,9 @@ function Vendors() {
               <th className="p-4 text-left">Phone</th>
               <th className="p-4 text-left">Email</th>
               <th className="p-4 text-left">Rating</th>
-              <th className="p-4 text-center">Actions</th>
+              {hasRole(...PERMISSIONS.VENDOR_MANAGE) && (
+  <th className="p-4 text-center">Actions</th>
+)}
 
             </tr>
 
@@ -120,22 +125,24 @@ function Vendors() {
                     {vendor.rating}
                   </td>
 
-                  <td className="p-4 text-center">
+                  {hasRole(...PERMISSIONS.VENDOR_MANAGE) && (
+  <td className="p-4 text-center">
 
-                    <button
-                      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-                    >
-                      Edit
-                    </button>
+    <button
+      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+    >
+      Edit
+    </button>
 
-                    <button
-                      onClick={() => handleDelete(vendor.id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+    <button
+      onClick={() => handleDelete(vendor.id)}
+      className="bg-red-600 text-white px-3 py-1 rounded"
+    >
+      Delete
+    </button>
 
-                  </td>
+  </td>
+)}
 
                 </tr>
 
@@ -146,7 +153,11 @@ function Vendors() {
               <tr>
 
                 <td
-                  colSpan="6"
+                  colSpan={
+  hasRole(...PERMISSIONS.VENDOR_MANAGE)
+    ? 6
+    : 5
+}
                   className="text-center p-8 text-slate-500"
                 >
                   No Vendors Found

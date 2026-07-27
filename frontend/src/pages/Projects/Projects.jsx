@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 
 import {
   getProjects,

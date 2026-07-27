@@ -3,7 +3,8 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 import { getProjects } from "../../services/projectService";
 import { getUsers } from "../../services/userService";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 import {
   getProjectMembers,
   deleteProjectMember,
@@ -112,22 +113,22 @@ const ProjectMembers = () => {
           Project Members
         </h1>
 
-        <button
-          onClick={() => {
-            if (!selectedProject) {
-              alert("Please select a project");
-              return;
-            }
+        {hasRole(...PERMISSIONS.PROJECT_MEMBER_MANAGE) && (
+  <button
+    onClick={() => {
+      if (!selectedProject) {
+        alert("Please select a project");
+        return;
+      }
 
-            setIsModalOpen(true);
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <FaPlus />
-
-          Add Member
-        </button>
-
+      setIsModalOpen(true);
+    }}
+    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+  >
+    <FaPlus />
+    Add Member
+  </button>
+)}
       </div>
 
       <div className="mb-6">
@@ -181,9 +182,11 @@ const ProjectMembers = () => {
                 Joined
               </th>
 
-              <th className="p-3 text-center">
-                Actions
-              </th>
+              {hasRole(...PERMISSIONS.PROJECT_MEMBER_MANAGE) && (
+  <th className="p-3 text-center">
+    Actions
+  </th>
+)}
             </tr>
 
           </thead>
@@ -193,7 +196,11 @@ const ProjectMembers = () => {
             {loading ? (
               <tr>
                 <td
-                  colSpan="6"
+                  colSpan={
+  hasRole(...PERMISSIONS.PROJECT_MEMBER_MANAGE)
+    ? 6
+    : 5
+}
                   className="text-center p-6"
                 >
                   Loading...
@@ -202,7 +209,11 @@ const ProjectMembers = () => {
             ) : members.length === 0 ? (
               <tr>
                 <td
-                  colSpan="6"
+                  colSpan={
+  hasRole(...PERMISSIONS.PROJECT_MEMBER_MANAGE)
+    ? 6
+    : 5
+}
                   className="text-center p-6"
                 >
                   No members found
@@ -241,22 +252,20 @@ const ProjectMembers = () => {
                       ).toLocaleDateString()}
                     </td>
 
-                    <td className="p-3 flex justify-center gap-3">
+                    {hasRole(...PERMISSIONS.PROJECT_MEMBER_MANAGE) && (
+  <td className="p-3 flex justify-center gap-3">
+    <button className="text-blue-600">
+      <FaEdit />
+    </button>
 
-                      <button className="text-blue-600">
-                        <FaEdit />
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          handleDelete(member.id)
-                        }
-                        className="text-red-600"
-                      >
-                        <FaTrash />
-                      </button>
-
-                    </td>
+    <button
+      onClick={() => handleDelete(member.id)}
+      className="text-red-600"
+    >
+      <FaTrash />
+    </button>
+  </td>
+)}
                   </tr>
                 );
               })

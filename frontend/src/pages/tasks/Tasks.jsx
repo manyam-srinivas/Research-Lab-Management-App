@@ -7,7 +7,8 @@ import {
   deleteTask,
 } from "../../services/taskService";
 import { getUsers } from "../../services/userService";
-
+import { hasRole } from "../../utils/permissions";
+import { PERMISSIONS } from "../../utils/rbac";
 import CreateTaskModal from "./CreateTaskModal";
 
 function Tasks() {
@@ -100,13 +101,15 @@ function Tasks() {
           Tasks
         </h1>
 
-        <button
-          disabled={!selectedMilestone}
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-        >
-          + Add Task
-        </button>
+        {hasRole(...PERMISSIONS.TASK_MANAGE) && (
+  <button
+    disabled={!selectedMilestone}
+    onClick={() => setIsModalOpen(true)}
+    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+  >
+    + Add Task
+  </button>
+)}
       </div>
 
       <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -201,9 +204,11 @@ function Tasks() {
                 Due Date
               </th>
 
-              <th className="p-4 text-center">
-                Actions
-              </th>
+              {hasRole(...PERMISSIONS.TASK_MANAGE) && (
+  <th className="p-4 text-center">
+    Actions
+  </th>
+)}
 
             </tr>
 
@@ -248,23 +253,24 @@ function Tasks() {
                       {task.due_date || "-"}
                     </td>
 
-                    <td className="p-4 text-center">
+                    
 
-                      <button className="bg-yellow-500 text-white px-3 py-1 rounded mr-2">
-                        Edit
-                      </button>
+  {hasRole(...PERMISSIONS.TASK_MANAGE) && (
+  <td className="p-4 text-center">
 
-                      <button
-                        onClick={() =>
-                          handleDelete(task.id)
-                        }
-                        className="bg-red-600 text-white px-3 py-1 rounded"
-                      >
-                        Delete
-                      </button>
+    <button className="bg-yellow-500 text-white px-3 py-1 rounded mr-2">
+      Edit
+    </button>
 
-                    </td>
+    <button
+      onClick={() => handleDelete(task.id)}
+      className="bg-red-600 text-white px-3 py-1 rounded"
+    >
+      Delete
+    </button>
 
+  </td>
+)} 
                   </tr>
 
                 );
@@ -276,7 +282,11 @@ function Tasks() {
               <tr>
 
                 <td
-                  colSpan="6"
+                  colSpan={
+  hasRole(...PERMISSIONS.TASK_MANAGE)
+    ? 6
+    : 5
+}
                   className="text-center p-8 text-slate-500"
                 >
                   No Tasks Found

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { PERMISSIONS } from "../utils/rbac";
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import DashboardLayout from "../pages/DashboardLayout";
@@ -44,7 +44,7 @@ function AppRouter() {
           <Route
   path="/departments"
   element={
-    <ProtectedRoute roles={["Admin"]}>
+    <ProtectedRoute roles={PERMISSIONS.DEPARTMENT_VIEW}>
       <Departments />
     </ProtectedRoute>
   }
@@ -93,15 +93,16 @@ function AppRouter() {
             path="/project-members"
             element={<ProjectMembers />}
           />
+          
           <Route
-            path="/milestones"
-            element={<Milestones />}
-          />
-          <Route
-            path="/tasks"
-            element={<Tasks />}
-          />
-          <Route
+  path="/Milestones"
+  element={
+    <ProtectedRoute roles={PERMISSIONS.MILESTONE_VIEW}>
+      <Milestones />
+    </ProtectedRoute>
+  }
+  />
+            <Route
             path="/equipment-bookings"
             element={<EquipmentBookings />}
           />
@@ -112,6 +113,13 @@ function AppRouter() {
           <Route 
            path="/activity-logs" 
            element={<ActivityLogs />} />
+           <Route
+  path="/Tasks"
+  element={
+    <ProtectedRoute roles={PERMISSIONS.TASK_VIEW}>
+      <Tasks />
+    </ProtectedRoute>
+  } />
 
         </Route>
 
