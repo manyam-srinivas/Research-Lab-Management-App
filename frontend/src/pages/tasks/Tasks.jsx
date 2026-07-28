@@ -21,7 +21,8 @@ function Tasks() {
 
   const [selectedProject, setSelectedProject] = useState("");
   const [selectedMilestone, setSelectedMilestone] = useState("");
-
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -81,7 +82,11 @@ function Tasks() {
       console.error(error);
     }
   };
-
+   const handleEdit = (task) => {
+  setSelectedTask(task);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this task?")) return;
 
@@ -258,9 +263,12 @@ function Tasks() {
   {hasRole(...PERMISSIONS.TASK_MANAGE) && (
   <td className="p-4 text-center">
 
-    <button className="bg-yellow-500 text-white px-3 py-1 rounded mr-2">
-      Edit
-    </button>
+    <button
+  onClick={() => handleEdit(task)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
     <button
       onClick={() => handleDelete(task.id)}
@@ -303,14 +311,20 @@ function Tasks() {
       </div>
 
       <CreateTaskModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        milestoneId={selectedMilestone}
-        users={users}
-        onTaskCreated={() =>
-          fetchTasks(selectedMilestone)
-        }
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedTask(null);
+    setIsEditing(false);
+  }}
+  milestoneId={selectedMilestone}
+  users={users}
+  task={selectedTask}
+  isEditing={isEditing}
+  onTaskCreated={() =>
+    fetchTasks(selectedMilestone)
+  }
+/>
 
     </>
   );

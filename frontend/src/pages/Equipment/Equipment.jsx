@@ -12,7 +12,8 @@ import CreateEquipmentModal from "./CreateEquipmentModal";
 function Equipment() {
   const [equipment, setEquipment] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedEquipment, setSelectedEquipment] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const fetchEquipment = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -29,7 +30,11 @@ function Equipment() {
   useEffect(() => {
     fetchEquipment();
   }, []);
-
+  const handleEdit = (equipment) => {
+  setSelectedEquipment(equipment);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this equipment?")) return;
 
@@ -56,7 +61,11 @@ function Equipment() {
 
         {hasRole(...PERMISSIONS.EQUIPMENT_MANAGE) && (
   <button
-    onClick={() => setIsModalOpen(true)}
+    onClick={() => {
+  setSelectedEquipment(null);
+  setIsEditing(false);
+  setIsModalOpen(true);
+}}
     className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
   >
     + Add Equipment
@@ -103,12 +112,11 @@ function Equipment() {
                   <td className="p-4">{item.location}</td>
                   <td className="p-4">{item.status}</td>
 
-                  <td className="p-4 text-center">
-
-                    {hasRole(...PERMISSIONS.EQUIPMENT_MANAGE) && (
+                  {hasRole(...PERMISSIONS.EQUIPMENT_MANAGE) && (
   <td className="p-4 text-center">
 
     <button
+      onClick={() => handleEdit(item)}
       className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
     >
       Edit
@@ -123,8 +131,6 @@ function Equipment() {
 
   </td>
 )}
-
-                  </td>
 
                 </tr>
 
@@ -152,10 +158,16 @@ function Equipment() {
       </div>
 
       <CreateEquipmentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onEquipmentCreated={fetchEquipment}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedEquipment(null);
+    setIsEditing(false);
+  }}
+  equipment={selectedEquipment}
+  isEditing={isEditing}
+  onEquipmentCreated={fetchEquipment}
+/>
 
     </>
   );

@@ -1,11 +1,18 @@
-import { useState } from "react";
-import { createEquipment } from "../../services/equipmentService";
+import { useEffect, useState } from "react";
+
+import {
+  createEquipment,
+  updateEquipment,
+} from "../../services/equipmentService";
 
 function CreateEquipmentModal({
   isOpen,
   onClose,
+  equipment,
+  isEditing,
   onEquipmentCreated,
 }) {
+  
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -16,6 +23,31 @@ function CreateEquipmentModal({
     status: "Available",
   });
 
+  useEffect(() => {
+  if (!isOpen) return;
+
+  if (isEditing && equipment) {
+    setFormData({
+      name: equipment.name || "",
+      description: equipment.description || "",
+      category: equipment.category || "",
+      serial_number: equipment.serial_number || "",
+      purchase_date: equipment.purchase_date || "",
+      location: equipment.location || "",
+      status: equipment.status || "Available",
+    });
+  } else {
+    setFormData({
+      name: "",
+      description: "",
+      category: "",
+      serial_number: "",
+      purchase_date: "",
+      location: "",
+      status: "Available",
+    });
+  }
+}, [isOpen, isEditing, equipment]);
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -26,34 +58,48 @@ function CreateEquipmentModal({
   };
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await createEquipment(token, formData);
+    if (isEditing) {
+      await updateEquipment(
+        token,
+        equipment.id,
+        formData
+      );
+
+      alert("Equipment updated successfully!");
+    } else {
+      await createEquipment(
+        token,
+        formData
+      );
 
       alert("Equipment created successfully!");
-
-      setFormData({
-        name: "",
-        description: "",
-        category: "",
-        serial_number: "",
-        purchase_date: "",
-        location: "",
-        status: "Available",
-      });
-
-      onClose();
-      onEquipmentCreated();
-
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Failed to create equipment"
-      );
     }
-  };
 
+    setFormData({
+      name: "",
+      description: "",
+      category: "",
+      serial_number: "",
+      purchase_date: "",
+      location: "",
+      status: "Available",
+    });
+
+    onClose();
+    onEquipmentCreated();
+
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update equipment"
+        : "Failed to create equipment")
+    );
+  }
+};
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
 
@@ -62,7 +108,7 @@ function CreateEquipmentModal({
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            Add Equipment
+            {isEditing ? "Edit Equipment" : "Add Equipment"}
           </h2>
 
           <button onClick={onClose}>
@@ -148,7 +194,7 @@ function CreateEquipmentModal({
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Equipment
+            {isEditing ? "Update Equipment" : "Create Equipment"}
           </button>
 
         </div>

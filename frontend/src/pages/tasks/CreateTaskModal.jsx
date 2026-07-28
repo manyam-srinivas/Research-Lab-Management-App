@@ -1,11 +1,17 @@
-import { useState } from "react";
-import { createTask } from "../../services/taskService";
+import { useEffect, useState } from "react";
+
+import {
+  createTask,
+  updateTask,
+} from "../../services/taskService";
 
 function CreateTaskModal({
   isOpen,
   onClose,
   milestoneId,
   users,
+  task,
+  isEditing,
   onTaskCreated,
 }) {
   const [formData, setFormData] = useState({
@@ -16,6 +22,31 @@ function CreateTaskModal({
     status: "Pending",
     due_date: "",
   });
+  useEffect(() => {
+  if (!isOpen) return;
+
+  if (isEditing && task) {
+    setFormData({
+      title: task.title || "",
+      description: task.description || "",
+      assigned_to: task.assigned_to
+        ? String(task.assigned_to)
+        : "",
+      priority: task.priority || "Medium",
+      status: task.status || "Pending",
+      due_date: task.due_date || "",
+    });
+  } else {
+    setFormData({
+      title: "",
+      description: "",
+      assigned_to: "",
+      priority: "Medium",
+      status: "Pending",
+      due_date: "",
+    });
+  }
+}, [isOpen, isEditing, task]);
 
   if (!isOpen) return null;
 
@@ -27,42 +58,65 @@ function CreateTaskModal({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await createTask(token, {
-        ...formData,
-        milestone_id: milestoneId,
-        assigned_to: formData.assigned_to
-          ? Number(formData.assigned_to)
-          : null,
-      });
+    const payload = {
+      ...formData,
+      milestone_id: milestoneId,
+      assigned_to: formData.assigned_to
+        ? Number(formData.assigned_to)
+        : null,
+    };
 
-      setFormData({
-        title: "",
-        description: "",
-        assigned_to: "",
-        priority: "Medium",
-        status: "Pending",
-        due_date: "",
-      });
+    if (isEditing) {
+      await updateTask(
+        token,
+        task.id,
+        payload
+      );
 
-      onTaskCreated();
-      onClose();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to create task");
+      alert("Task updated successfully!");
+    } else {
+      await createTask(
+        token,
+        payload
+      );
+
+      alert("Task created successfully!");
     }
-  };
+
+    setFormData({
+      title: "",
+      description: "",
+      assigned_to: "",
+      priority: "Medium",
+      status: "Pending",
+      due_date: "",
+    });
+
+    onTaskCreated();
+    onClose();
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      isEditing
+        ? "Failed to update task"
+        : "Failed to create task"
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-xl p-6">
 
         <h2 className="text-2xl font-bold mb-6">
-          Create Task
+          {isEditing ? "Edit Task" : "Create Task"}
         </h2>
 
         <form
@@ -154,7 +208,7 @@ function CreateTaskModal({
               type="submit"
               className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
             >
-              Create Task
+              {isEditing ? "Update Task" : "Create Task"}
             </button>
 
           </div>

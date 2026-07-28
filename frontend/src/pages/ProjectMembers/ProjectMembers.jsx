@@ -24,7 +24,8 @@ const ProjectMembers = () => {
   const [loading, setLoading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -74,7 +75,11 @@ const ProjectMembers = () => {
 
     fetchMembers(projectId);
   };
-
+  const handleEdit = (member) => {
+  setSelectedMember(member);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   const handleDelete = async (memberId) => {
     if (
       !window.confirm(
@@ -121,7 +126,9 @@ const ProjectMembers = () => {
         return;
       }
 
-      setIsModalOpen(true);
+      setSelectedMember(null);
+setIsEditing(false);
+setIsModalOpen(true);
     }}
     className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
   >
@@ -254,9 +261,12 @@ const ProjectMembers = () => {
 
                     {hasRole(...PERMISSIONS.PROJECT_MEMBER_MANAGE) && (
   <td className="p-3 flex justify-center gap-3">
-    <button className="text-blue-600">
-      <FaEdit />
-    </button>
+    <button
+  onClick={() => handleEdit(member)}
+  className="text-blue-600"
+>
+  <FaEdit />
+</button>
 
     <button
       onClick={() => handleDelete(member.id)}
@@ -278,16 +288,22 @@ const ProjectMembers = () => {
       </div>
 
       <CreateProjectMemberModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        token={token}
-        projectId={selectedProject}
-        users={users}
-        onSuccess={() => {
-          fetchMembers(selectedProject);
-          setIsModalOpen(false);
-        }}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedMember(null);
+    setIsEditing(false);
+  }}
+  token={token}
+  projectId={selectedProject}
+  users={users}
+  member={selectedMember}
+  isEditing={isEditing}
+  onSuccess={() => {
+    fetchMembers(selectedProject);
+    setIsModalOpen(false);
+  }}
+/>
 
     </div>
   );

@@ -1,18 +1,38 @@
-import { useState } from "react";
-import { addProjectMember } from "../../services/projectMemberService";
+import { useEffect, useState } from "react";
 
+import {
+  addProjectMember,
+  updateProjectMember,
+} from "../../services/projectMemberService";
 const CreateProjectMemberModal = ({
   isOpen,
   onClose,
   token,
   projectId,
   users,
+  member,
+  isEditing,
   onSuccess,
 }) => {
   const [formData, setFormData] = useState({
     user_id: "",
     member_type: "Student",
   });
+  useEffect(() => {
+  if (!isOpen) return;
+
+  if (isEditing && member) {
+    setFormData({
+      user_id: member.user_id,
+      member_type: member.member_type,
+    });
+  } else {
+    setFormData({
+      user_id: "",
+      member_type: "Student",
+    });
+  }
+}, [isOpen, isEditing, member]);
 
   if (!isOpen) return null;
 
@@ -23,15 +43,28 @@ const CreateProjectMemberModal = ({
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!formData.user_id) {
-      alert("Please select a user.");
-      return;
-    }
+  if (!formData.user_id) {
+    alert("Please select a user.");
+    return;
+  }
 
-    try {
+  try {
+    if (isEditing) {
+      await updateProjectMember(
+        token,
+        member.id,
+        {
+          project_id: Number(projectId),
+          user_id: Number(formData.user_id),
+          member_type: formData.member_type,
+        }
+      );
+
+      alert("Member updated successfully.");
+    } else {
       await addProjectMember(token, {
         project_id: Number(projectId),
         user_id: Number(formData.user_id),
@@ -39,25 +72,32 @@ const CreateProjectMemberModal = ({
       });
 
       alert("Member added successfully.");
-
-      setFormData({
-        user_id: "",
-        member_type: "Student",
-      });
-
-      onSuccess();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to add member.");
     }
-  };
+
+    setFormData({
+      user_id: "",
+      member_type: "Student",
+    });
+
+    onSuccess();
+
+  } catch (err) {
+    console.error(err);
+
+    alert(
+      isEditing
+        ? "Failed to update member."
+        : "Failed to add member."
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
 
         <h2 className="text-xl font-bold mb-4">
-          Add Project Member
+          {isEditing ? "Edit Project Member" : "Add Project Member"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -124,7 +164,7 @@ const CreateProjectMemberModal = ({
               type="submit"
               className="px-4 py-2 rounded-lg bg-blue-600 text-white"
             >
-              Add Member
+              {isEditing ? "Update Member" : "Add Member"}
             </button>
 
           </div>
