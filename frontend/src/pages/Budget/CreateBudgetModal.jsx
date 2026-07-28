@@ -1,10 +1,16 @@
-import { useState } from "react";
-import { createBudget } from "../../services/budgetService";
+import { useEffect, useState } from "react";
+
+import {
+  createBudget,
+  updateBudget,
+} from "../../services/budgetService";
 
 function CreateBudgetModal({
   isOpen,
   onClose,
   departments,
+  budget,
+  isEditing,
   onCreated,
 }) {
   const [formData, setFormData] = useState({
@@ -12,7 +18,23 @@ function CreateBudgetModal({
     financial_year: "",
     allocated_amount: "",
   });
+   useEffect(() => {
+  if (!isOpen) return;
 
+  if (isEditing && budget) {
+    setFormData({
+      department_id: budget.department_id || "",
+      financial_year: budget.financial_year || "",
+      allocated_amount: budget.allocated_amount || "",
+    });
+  } else {
+    setFormData({
+      department_id: "",
+      financial_year: "",
+      allocated_amount: "",
+    });
+  }
+}, [isOpen, isEditing, budget]);
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -23,35 +45,52 @@ function CreateBudgetModal({
   };
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await createBudget(token, {
-        department_id: Number(formData.department_id),
-        financial_year: formData.financial_year,
-        allocated_amount: Number(formData.allocated_amount),
-      });
+    const payload = {
+      department_id: Number(formData.department_id),
+      financial_year: formData.financial_year,
+      allocated_amount: Number(formData.allocated_amount),
+    };
+
+    if (isEditing) {
+      await updateBudget(
+        token,
+        budget.id,
+        payload
+      );
+
+      alert("Budget updated successfully!");
+    } else {
+      await createBudget(
+        token,
+        payload
+      );
 
       alert("Budget created successfully!");
-
-      setFormData({
-        department_id: "",
-        financial_year: "",
-        allocated_amount: "",
-      });
-
-      onClose();
-      onCreated();
-
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        error.response?.data?.message ||
-        "Failed to create budget"
-      );
     }
-  };
+
+    setFormData({
+      department_id: "",
+      financial_year: "",
+      allocated_amount: "",
+    });
+
+    onClose();
+    onCreated();
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update budget"
+        : "Failed to create budget")
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -61,7 +100,9 @@ function CreateBudgetModal({
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            Create Budget
+            {isEditing
+  ? "Edit Budget"
+  : "Create Budget"}
           </h2>
 
           <button onClick={onClose}>
@@ -125,7 +166,9 @@ function CreateBudgetModal({
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Budget
+            {isEditing
+  ? "Update Budget"
+  : "Create Budget"}
           </button>
 
         </div>

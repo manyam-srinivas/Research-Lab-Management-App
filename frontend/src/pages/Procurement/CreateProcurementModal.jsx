@@ -1,11 +1,15 @@
-import { useState } from "react";
-
-import { createProcurementRequest } from "../../services/procurementService";
+import { useEffect, useState } from "react";
+import {
+  createProcurementRequest,
+  updateProcurementRequest,
+} from "../../services/procurementService";
 
 function CreateProcurementModal({
   isOpen,
   onClose,
   vendors,
+  request,
+  isEditing,
   onCreated,
 }) {
   const [formData, setFormData] = useState({
@@ -15,6 +19,27 @@ function CreateProcurementModal({
     estimated_cost: "",
     justification: "",
   });
+  useEffect(() => {
+  if (!isOpen) return;
+
+  if (isEditing && request) {
+    setFormData({
+      item_name: request.item_name || "",
+      vendor_id: request.vendor_id || "",
+      quantity: request.quantity || "",
+      estimated_cost: request.estimated_cost || "",
+      justification: request.justification || "",
+    });
+  } else {
+    setFormData({
+      item_name: "",
+      vendor_id: "",
+      quantity: "",
+      estimated_cost: "",
+      justification: "",
+    });
+  }
+}, [isOpen, isEditing, request]);
 
   if (!isOpen) return null;
 
@@ -26,44 +51,61 @@ function CreateProcurementModal({
   };
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await createProcurementRequest(token, {
-        ...formData,
-        vendor_id: formData.vendor_id
-          ? Number(formData.vendor_id)
-          : null,
-        quantity: formData.quantity
-          ? Number(formData.quantity)
-          : null,
-        estimated_cost: formData.estimated_cost
-          ? Number(formData.estimated_cost)
-          : null,
-      });
+    const payload = {
+      ...formData,
+      vendor_id: formData.vendor_id
+        ? Number(formData.vendor_id)
+        : null,
+      quantity: formData.quantity
+        ? Number(formData.quantity)
+        : null,
+      estimated_cost: formData.estimated_cost
+        ? Number(formData.estimated_cost)
+        : null,
+    };
+
+    if (isEditing) {
+      await updateProcurementRequest(
+        token,
+        request.id,
+        payload
+      );
+
+      alert("Procurement request updated successfully!");
+    } else {
+      await createProcurementRequest(
+        token,
+        payload
+      );
 
       alert("Procurement request created successfully!");
-
-      setFormData({
-        item_name: "",
-        vendor_id: "",
-        quantity: "",
-        estimated_cost: "",
-        justification: "",
-      });
-
-      onClose();
-      onCreated();
-
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        error.response?.data?.message ||
-          "Failed to create request"
-      );
     }
-  };
+
+    setFormData({
+      item_name: "",
+      vendor_id: "",
+      quantity: "",
+      estimated_cost: "",
+      justification: "",
+    });
+
+    onClose();
+    onCreated();
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update request"
+        : "Failed to create request")
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -73,7 +115,9 @@ function CreateProcurementModal({
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            New Procurement Request
+            {isEditing
+  ? "Edit Procurement Request"
+  : "New Procurement Request"}
           </h2>
 
           <button onClick={onClose}>
@@ -155,7 +199,9 @@ function CreateProcurementModal({
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Request
+            {isEditing
+  ? "Update Request"
+  : "Create Request"}
           </button>
 
         </div>

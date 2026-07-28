@@ -15,7 +15,8 @@ function Budget() {
   const [budgets, setBudgets] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedBudget, setSelectedBudget] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const token = localStorage.getItem("token");
 
   const fetchData = async () => {
@@ -46,7 +47,11 @@ function Budget() {
       ? department.name
       : "-";
   };
-
+  const handleEdit = (budget) => {
+  setSelectedBudget(budget);
+  setIsEditing(true);
+  setIsModalOpen(true);
+}; 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this budget?")) return;
 
@@ -73,7 +78,11 @@ function Budget() {
 
         {hasRole(...PERMISSIONS.BUDGET_MANAGE) && (
   <button
-    onClick={() => setIsModalOpen(true)}
+    onClick={() => {
+  setSelectedBudget(null);
+  setIsEditing(false);
+  setIsModalOpen(true);
+}}
     className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
   >
     + Create Budget
@@ -157,10 +166,11 @@ function Budget() {
   <td className="p-4 text-center">
 
     <button
-      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-    >
-      Edit
-    </button>
+  onClick={() => handleEdit(budget)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
     <button
       onClick={() =>
@@ -204,13 +214,17 @@ function Budget() {
       </div>
 
       <CreateBudgetModal
-        isOpen={isModalOpen}
-        onClose={() =>
-          setIsModalOpen(false)
-        }
-        departments={departments}
-        onCreated={fetchData}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedBudget(null);
+    setIsEditing(false);
+  }}
+  departments={departments}
+  budget={selectedBudget}
+  isEditing={isEditing}
+  onCreated={fetchData}
+/>
 
     </>
   );

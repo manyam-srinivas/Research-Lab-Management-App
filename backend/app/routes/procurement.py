@@ -28,6 +28,65 @@ def request_to_dict(req):
         if req.created_at else None
     }
 
+@procurement_bp.route(
+    "/<int:request_id>",
+    methods=["PUT"]
+)
+@jwt_required()
+def update_request(request_id):
+
+    current_user_id = int(get_jwt_identity())
+
+    user = User.query.get(current_user_id)
+
+    procurement = ProcurementService.get_request(
+        request_id
+    )
+
+    if not procurement:
+        return {
+            "status": "error",
+            "message": "Request not found"
+        }, 404
+
+    if (
+        user.role != "Admin"
+        and procurement.requested_by != current_user_id
+    ):
+        return {
+            "status": "error",
+            "message": "Permission denied"
+        }, 403
+
+    if procurement.status != "Pending":
+        return {
+            "status": "error",
+            "message": "Only pending requests can be edited."
+        }, 400
+
+    data = request.get_json()
+
+    vendor_id = data.get("vendor_id")
+
+    if vendor_id:
+
+        vendor = Vendor.query.get(vendor_id)
+
+        if not vendor:
+            return {
+                "status": "error",
+                "message": "Vendor not found."
+            }, 404
+
+    ProcurementService.update_request(
+        procurement,
+        data
+    )
+
+    return {
+        "status": "success",
+        "message": "Procurement request updated successfully"
+    }, 200
 
 @procurement_bp.route("/", methods=["POST"])
 @jwt_required()

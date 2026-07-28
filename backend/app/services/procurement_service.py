@@ -31,6 +31,19 @@ class ProcurementService:
         return ProcurementRequest.query.get(request_id)
 
     @staticmethod
+    def update_request(request_obj, data):
+
+     request_obj.vendor_id = data.get("vendor_id")
+     request_obj.item_name = data.get("item_name")
+     request_obj.quantity = data.get("quantity")
+     request_obj.estimated_cost = data.get("estimated_cost")
+     request_obj.justification = data.get("justification")
+
+     db.session.commit()
+
+     return request_obj
+
+    @staticmethod
     def update_status(request_obj, status, approved_by):
 
         request_obj.status = status

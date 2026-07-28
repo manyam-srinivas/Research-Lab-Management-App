@@ -1,10 +1,14 @@
-import { useState } from "react";
-
-import { createVendor } from "../../services/vendorService";
+import { useEffect, useState } from "react";
+import {
+  createVendor,
+  updateVendor,
+} from "../../services/vendorService";
 
 function CreateVendorModal({
   isOpen,
   onClose,
+  vendor,
+  isEditing,
   onVendorCreated,
 }) {
 
@@ -16,7 +20,29 @@ function CreateVendorModal({
     address: "",
     rating: "",
   });
+  useEffect(() => {
+  if (!isOpen) return;
 
+  if (isEditing && vendor) {
+    setFormData({
+      vendor_name: vendor.vendor_name || "",
+      contact_person: vendor.contact_person || "",
+      phone: vendor.phone || "",
+      email: vendor.email || "",
+      address: vendor.address || "",
+      rating: vendor.rating || "",
+    });
+  } else {
+    setFormData({
+      vendor_name: "",
+      contact_person: "",
+      phone: "",
+      email: "",
+      address: "",
+      rating: "",
+    });
+  }
+}, [isOpen, isEditing, vendor]);
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -29,36 +55,49 @@ function CreateVendorModal({
   };
 
   const handleSubmit = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-    try {
-
-      const token = localStorage.getItem("token");
-
-      await createVendor(token, formData);
-
-      alert("Vendor created successfully!");
-
-      setFormData({
-        vendor_name: "",
-        contact_person: "",
-        phone: "",
-        email: "",
-        address: "",
-        rating: "",
-      });
-
-      onClose();
-      onVendorCreated();
-
-    } catch (error) {
-
-      alert(
-        error.response?.data?.message ||
-        "Failed to create vendor"
+    if (isEditing) {
+      await updateVendor(
+        token,
+        vendor.id,
+        formData
       );
 
+      alert("Vendor updated successfully!");
+    } else {
+      await createVendor(
+        token,
+        formData
+      );
+
+      alert("Vendor created successfully!");
     }
-  };
+
+    setFormData({
+      vendor_name: "",
+      contact_person: "",
+      phone: "",
+      email: "",
+      address: "",
+      rating: "",
+    });
+
+    onClose();
+    onVendorCreated();
+
+  } catch (error) {
+
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update vendor"
+        : "Failed to create vendor")
+    );
+
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -68,7 +107,7 @@ function CreateVendorModal({
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            Add Vendor
+            {isEditing ? "Edit Vendor" : "Add Vendor"}
           </h2>
 
           <button onClick={onClose}>
@@ -147,7 +186,7 @@ function CreateVendorModal({
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Vendor
+            {isEditing ? "Update Vendor" : "Create Vendor"}
           </button>
 
         </div>

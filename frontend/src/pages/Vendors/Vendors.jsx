@@ -14,7 +14,8 @@ function Vendors() {
 
   const [vendors, setVendors] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const fetchVendors = async () => {
     try {
 
@@ -32,7 +33,11 @@ function Vendors() {
   useEffect(() => {
     fetchVendors();
   }, []);
-
+  const handleEdit = (vendor) => {
+  setSelectedVendor(vendor);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   const handleDelete = async (id) => {
 
     if (!window.confirm("Delete this vendor?")) return;
@@ -64,7 +69,11 @@ function Vendors() {
 
         {hasRole(...PERMISSIONS.VENDOR_MANAGE) && (
   <button
-    onClick={() => setIsModalOpen(true)}
+    onClick={() => {
+  setSelectedVendor(null);
+  setIsEditing(false);
+  setIsModalOpen(true);
+}}
     className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
   >
     + Add Vendor
@@ -129,10 +138,11 @@ function Vendors() {
   <td className="p-4 text-center">
 
     <button
-      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-    >
-      Edit
-    </button>
+  onClick={() => handleEdit(vendor)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
     <button
       onClick={() => handleDelete(vendor.id)}
@@ -174,10 +184,16 @@ function Vendors() {
       </div>
 
       <CreateVendorModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onVendorCreated={fetchVendors}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedVendor(null);
+    setIsEditing(false);
+  }}
+  vendor={selectedVendor}
+  isEditing={isEditing}
+  onVendorCreated={fetchVendors}
+/>
 
     </>
   );

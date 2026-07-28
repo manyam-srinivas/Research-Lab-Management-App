@@ -17,7 +17,8 @@ function Procurement() {
   const [requests, setRequests] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const token = localStorage.getItem("token");
 
   const fetchData = async () => {
@@ -67,7 +68,11 @@ function Procurement() {
         return "bg-yellow-100 text-yellow-700";
     }
   };
-
+  const handleEdit = (request) => {
+  setSelectedRequest(request);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   const handleDelete = async (id) => {
 
     if (
@@ -109,7 +114,11 @@ function Procurement() {
 
         {hasRole(...PERMISSIONS.PROCUREMENT_CREATE) && (
   <button
-    onClick={() => setIsModalOpen(true)}
+    onClick={() => {
+  setSelectedRequest(null);
+  setIsEditing(false);
+  setIsModalOpen(true);
+}}
     className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
   >
     + New Request
@@ -202,10 +211,11 @@ function Procurement() {
   <td className="p-4 text-center">
 
     <button
-      className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
-    >
-      Edit
-    </button>
+  onClick={() => handleEdit(request)}
+  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+>
+  Edit
+</button>
 
     <button
       onClick={() => handleDelete(request.id)}
@@ -247,13 +257,17 @@ function Procurement() {
       </div>
 
       <CreateProcurementModal
-        isOpen={isModalOpen}
-        onClose={() =>
-          setIsModalOpen(false)
-        }
-        vendors={vendors}
-        onCreated={fetchData}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedRequest(null);
+    setIsEditing(false);
+  }}
+  vendors={vendors}
+  request={selectedRequest}
+  isEditing={isEditing}
+  onCreated={fetchData}
+/>
 
     </>
   );

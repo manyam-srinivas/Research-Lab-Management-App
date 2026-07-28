@@ -23,7 +23,23 @@ export async function createProcurementRequest(token, requestData) {
 
   return response.data;
 }
+export async function updateProcurementRequest(
+  token,
+  id,
+  requestData
+) {
+  const response = await api.put(
+    `/procurement/${id}`,
+    requestData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
+  return response.data;
+}
 export async function updateProcurementStatus(token, id, status) {
   const response = await api.put(
     `/procurement/${id}/status`,
