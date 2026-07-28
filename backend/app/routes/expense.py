@@ -95,6 +95,50 @@ def get_expense(expense_id):
         "expense": expense_to_dict(expense)
     }, 200
 
+@expense_bp.route(
+    "/<int:expense_id>",
+    methods=["PUT"]
+)
+@jwt_required()
+def update_expense(expense_id):
+
+    current_user_id = int(get_jwt_identity())
+
+    user = User.query.get(current_user_id)
+
+    if user.role != "Admin":
+        return {
+            "status": "error",
+            "message": "Only Admin can update expenses."
+        }, 403
+
+    expense = ExpenseService.get_expense(expense_id)
+
+    if not expense:
+        return {
+            "status": "error",
+            "message": "Expense not found"
+        }, 404
+
+    data = request.get_json()
+
+    budget = Budget.query.get(data.get("budget_id"))
+
+    if not budget:
+        return {
+            "status": "error",
+            "message": "Budget not found."
+        }, 404
+
+    ExpenseService.update_expense(
+        expense,
+        data
+    )
+
+    return {
+        "status": "success",
+        "message": "Expense updated successfully"
+    }, 200
 
 @expense_bp.route(
     "/<int:expense_id>",

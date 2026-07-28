@@ -1,10 +1,16 @@
-import { useState } from "react";
-import { createExpense } from "../../services/expenseService";
+import { useEffect, useState } from "react";
+
+import {
+  createExpense,
+  updateExpense,
+} from "../../services/expenseService";
 
 function CreateExpenseModal({
   isOpen,
   onClose,
   budgets,
+  expense,
+  isEditing,
   onCreated,
 }) {
   const [formData, setFormData] = useState({
@@ -14,7 +20,29 @@ function CreateExpenseModal({
     expense_type: "Recurring",
     description: "",
   });
+  useEffect(() => {
+  if (!isOpen) return;
 
+  if (isEditing && expense) {
+    setFormData({
+      budget_id: expense.budget_id || "",
+      procurement_request_id:
+        expense.procurement_request_id || "",
+      amount: expense.amount || "",
+      expense_type:
+        expense.expense_type || "Recurring",
+      description: expense.description || "",
+    });
+  } else {
+    setFormData({
+      budget_id: "",
+      procurement_request_id: "",
+      amount: "",
+      expense_type: "Recurring",
+      description: "",
+    });
+  }
+}, [isOpen, isEditing, expense]);
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -25,42 +53,59 @@ function CreateExpenseModal({
   };
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await createExpense(token, {
-        budget_id: Number(formData.budget_id),
-        procurement_request_id:
-          formData.procurement_request_id
-            ? Number(formData.procurement_request_id)
-            : null,
-        amount: Number(formData.amount),
-        expense_type: formData.expense_type,
-        description: formData.description,
-      });
+    const payload = {
+      budget_id: Number(formData.budget_id),
+      procurement_request_id:
+        formData.procurement_request_id
+          ? Number(formData.procurement_request_id)
+          : null,
+      amount: Number(formData.amount),
+      expense_type: formData.expense_type,
+      description: formData.description,
+    };
+
+    if (isEditing) {
+      await updateExpense(
+        token,
+        expense.id,
+        payload
+      );
+
+      alert("Expense updated successfully!");
+    } else {
+      await createExpense(
+        token,
+        payload
+      );
 
       alert("Expense created successfully!");
-
-      setFormData({
-        budget_id: "",
-        procurement_request_id: "",
-        amount: "",
-        expense_type: "Recurring",
-        description: "",
-      });
-
-      onClose();
-      onCreated();
-
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        error.response?.data?.message ||
-          "Failed to create expense"
-      );
     }
-  };
+
+    setFormData({
+      budget_id: "",
+      procurement_request_id: "",
+      amount: "",
+      expense_type: "Recurring",
+      description: "",
+    });
+
+    onClose();
+    onCreated();
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      error.response?.data?.message ||
+      (isEditing
+        ? "Failed to update expense"
+        : "Failed to create expense")
+    );
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -70,7 +115,9 @@ function CreateExpenseModal({
         <div className="flex justify-between items-center mb-6">
 
           <h2 className="text-2xl font-bold">
-            Create Expense
+            {isEditing
+  ? "Edit Expense"
+  : "Create Expense"}
           </h2>
 
           <button onClick={onClose}>
@@ -154,7 +201,9 @@ function CreateExpenseModal({
             onClick={handleSubmit}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg"
           >
-            Create Expense
+            {isEditing
+  ? "Update Expense"
+  : "Create Expense"}
           </button>
 
         </div>

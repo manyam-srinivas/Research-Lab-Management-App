@@ -15,6 +15,77 @@ dashboard_bp = Blueprint(
     __name__
 )
 
+@dashboard_bp.route("/", methods=["GET"])
+@jwt_required()
+def dashboard():
+
+    from app.models.budget import Budget
+    from app.models.expense import Expense
+    from app.models.equipment import Equipment
+    from app.models.task import Task
+
+    budgets = Budget.query.all()
+    expenses = Expense.query.all()
+
+    total_budget = sum(
+        float(b.allocated_amount)
+        for b in budgets
+    )
+
+    total_spent = sum(
+        float(b.spent_amount)
+        for b in budgets
+    )
+
+    total_remaining = sum(
+        float(b.remaining_amount)
+        for b in budgets
+    )
+
+    return {
+        "status": "success",
+
+        "summary": DashboardService.get_summary(),
+
+        "finance": {
+            "total_budget": total_budget,
+            "total_spent": total_spent,
+            "remaining_budget": total_remaining,
+            "total_expenses": len(expenses)
+        },
+
+        "equipment": {
+            "total": Equipment.query.count(),
+            "available":
+                Equipment.query.filter_by(
+                    status="Available"
+                ).count(),
+            "booked":
+                Equipment.query.filter_by(
+                    status="Booked"
+                ).count(),
+            "maintenance":
+                Equipment.query.filter_by(
+                    status="Under Maintenance"
+                ).count()
+        },
+
+        "tasks": {
+            "total": Task.query.count(),
+            "completed":
+                Task.query.filter_by(
+                    status="Completed"
+                ).count(),
+            "pending":
+                Task.query.filter_by(
+                    status="Pending"
+                ).count(),
+            "in_progress":
+                Task.query.filter_by(
+                    status="In Progress"
+                ).count()
+        }
+    }, 200
 
 @dashboard_bp.route("/summary", methods=["GET"])
 @jwt_required()

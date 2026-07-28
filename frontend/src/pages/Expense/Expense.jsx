@@ -18,7 +18,8 @@ function Expenses() {
   const [budgets, setBudgets] = useState([]);
   const [departments, setDepartments] = useState([]); 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const token = localStorage.getItem("token");
 
   const fetchData = async () => {
@@ -59,7 +60,11 @@ function Expenses() {
 
   return `${department?.name || "-"} (${budget.financial_year})`;
 };
-
+  const handleEdit = (expense) => {
+  setSelectedExpense(expense);
+  setIsEditing(true);
+  setIsModalOpen(true);
+};
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this expense?")) return;
 
@@ -86,7 +91,11 @@ function Expenses() {
 
         {hasRole(...PERMISSIONS.EXPENSE_CREATE) && (
   <button
-    onClick={() => setIsModalOpen(true)}
+    onClick={() => {
+  setSelectedExpense(null);
+  setIsEditing(false);
+  setIsModalOpen(true);
+}}
     className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
   >
     + Create Expense
@@ -169,16 +178,23 @@ function Expenses() {
                   {hasRole(...PERMISSIONS.EXPENSE_MANAGE) && (
   <td className="p-4 text-center">
 
-    <button
-      onClick={() =>
-        handleDelete(expense.id)
-      }
-      className="bg-red-600 text-white px-3 py-1 rounded"
-    >
-      Delete
-    </button>
+  <button
+    onClick={() => handleEdit(expense)}
+    className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+  >
+    Edit
+  </button>
 
-  </td>
+  <button
+    onClick={() =>
+      handleDelete(expense.id)
+    }
+    className="bg-red-600 text-white px-3 py-1 rounded"
+  >
+    Delete
+  </button>
+
+</td>
 )}
 
                 </tr>
@@ -211,11 +227,17 @@ function Expenses() {
       </div>
 
       <CreateExpenseModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        budgets={budgets}
-        onCreated={fetchData}
-      />
+  isOpen={isModalOpen}
+  onClose={() => {
+    setIsModalOpen(false);
+    setSelectedExpense(null);
+    setIsEditing(false);
+  }}
+  budgets={budgets}
+  expense={selectedExpense}
+  isEditing={isEditing}
+  onCreated={fetchData}
+/>
 
     </>
   );

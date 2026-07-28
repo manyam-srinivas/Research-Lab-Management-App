@@ -24,7 +24,29 @@ def log_to_dict(log):
         if log.created_at else None
     }
 
+@activity_log_bp.route("/recent", methods=["GET"])
+@jwt_required()
+def get_recent_logs():
 
+    current_user_id = int(get_jwt_identity())
+
+    user = User.query.get(current_user_id)
+
+    if user.role != "Admin":
+        return {
+            "status": "error",
+            "message": "Only Admin can view activity logs."
+        }, 403
+
+    logs = ActivityLogService.get_recent_logs()
+
+    return {
+        "status": "success",
+        "logs": [
+            log_to_dict(log)
+            for log in logs
+        ]
+    }, 200
 @activity_log_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_log():

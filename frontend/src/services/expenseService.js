@@ -21,6 +21,23 @@ export const createExpense = async (token, data) => {
 
   return response.data;
 };
+export const updateExpense = async (
+  token,
+  id,
+  data
+) => {
+  const response = await api.put(
+    `/expenses/${id}`,
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }  
+  );
+
+  return response.data;
+};
 
 // Delete expense
 export const deleteExpense = async (token, id) => {

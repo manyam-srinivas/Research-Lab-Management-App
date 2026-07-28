@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
-
+import ProjectStatusChart from "../../components/dashboard/ProjectStatusChart";
 import WelcomeBanner from "../../components/dashboard/WelcomeBanner";
 import DashboardStats from "../../components/dashboard/DashboardStats";
+import BudgetPieChart from "../../components/dashboard/BudgetPieChart";
+import { getDashboardData } from "../../services/dashboardService";
+import TaskStatusChart from "../../components/dashboard/TaskStatusChart";
+import EquipmentStatusChart from "../../components/dashboard/EquipmentStatusChart";
 
-import { getDashboardSummary } from "../../services/authService";
 
 function Dashboard() {
-  const [summary, setSummary] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
 
   useEffect(() => {
     const fetchSummary = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await getDashboardSummary(token);
+        const response = await getDashboardData(token);
 
-        setSummary(response.summary);
+        setDashboardData(response);
       } catch (error) {
         console.error(error);
       }
@@ -29,8 +32,31 @@ function Dashboard() {
       <WelcomeBanner />
 
       <div className="mt-8">
-        <DashboardStats summary={summary} />
+        <DashboardStats
+  summary={dashboardData?.summary}
+  finance={dashboardData?.finance}
+  equipment={dashboardData?.equipment}
+  tasks={dashboardData?.tasks}
+/>
       </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+  <ProjectStatusChart
+    summary={dashboardData?.summary}
+  />
+
+  <BudgetPieChart
+    finance={dashboardData?.finance}
+  />
+</div>
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+  <TaskStatusChart
+    tasks={dashboardData?.tasks}
+  />
+
+  <EquipmentStatusChart
+    equipment={dashboardData?.equipment}
+  />
+</div>
     </>
   );
 }

@@ -19,7 +19,15 @@ class ActivityLogService:
         db.session.commit()
 
         return log
+    @staticmethod
+    def get_recent_logs(limit=10):
 
+     return (
+        ActivityLog.query
+        .order_by(ActivityLog.created_at.desc())
+        .limit(limit)
+        .all()
+    )
     @staticmethod
     def get_all_logs():
         return ActivityLog.query.all()
