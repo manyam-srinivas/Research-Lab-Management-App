@@ -32,3 +32,40 @@ class UserService:
      db.session.commit()
 
      return user
+    @staticmethod
+    def reject_user(user, approved_by):
+
+     user.status = "Rejected"
+     user.approved_by = approved_by
+     user.approved_at = datetime.utcnow()
+
+     db.session.commit()
+
+     return user 
+
+    @staticmethod
+    def change_role(user, role):
+
+     user.role = role
+
+     db.session.commit()
+
+     return user   
+
+    @staticmethod
+    def activate_user(user):
+
+     user.status = "Active"
+     db.session.commit()
+
+     return user
+
+
+    @staticmethod
+    def deactivate_user(user):
+
+     user.status = "Inactive"
+
+     db.session.commit()
+
+     return user
