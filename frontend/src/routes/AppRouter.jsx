@@ -18,7 +18,8 @@ import Tasks from "../pages/tasks/Tasks";
 import EquipmentBookings from "../pages/equipmentBookings/EquipmentBookings";
 import Notifications from "../pages/notifications/Notifications";
 import ActivityLogs from "../pages/activityLogs/ActivityLogs";
-
+import Register from "../pages/Register/Register";
+import Users from "../pages/Users/Users";
 import ProtectedRoute from "../routes/ProtectedRoute";
 
 function AppRouter() {
@@ -28,6 +29,7 @@ function AppRouter() {
 
         {/* Public Route */}
         <Route path="/" element={<Login />} />
+<Route path="/register" element={<Register />} />
 
         {/* Protected Routes */}         
         <Route
@@ -165,6 +167,15 @@ function AppRouter() {
               </ProtectedRoute>
                      }
           />
+
+          <Route
+  path="/users"
+  element={
+    <ProtectedRoute roles={PERMISSIONS.USER_VIEW}>
+      <Users />
+    </ProtectedRoute>
+  }
+/>
 
        // Activity Logs
 

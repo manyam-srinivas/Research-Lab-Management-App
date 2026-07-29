@@ -161,12 +161,14 @@ def reject_user(user_id):
 def change_role(user_id):
 
     current_user_id = int(get_jwt_identity())
+    user = UserService.get_user(user_id)
+
     if user.status != "Active":
      return {
         "status": "error",
         "message": "Only active users can have their role changed"
     }, 400
-    user = UserService.get_user(user_id)
+    
 
     if not user:
         return {
@@ -213,6 +215,8 @@ def change_role(user_id):
 def activate_user(user_id):
 
     current_user_id = int(get_jwt_identity())
+    
+    user = UserService.get_user(user_id)
 
     if user.status == "Rejected":
      return {

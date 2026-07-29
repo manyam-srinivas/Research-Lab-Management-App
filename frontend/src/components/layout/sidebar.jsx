@@ -147,6 +147,13 @@ function Sidebar() {
 )}
 {hasRole("Admin") && (
   <SidebarItem
+    icon={<FaUsers />}
+    text="Users"
+    to="/users"
+  />
+)}
+{hasRole(...PERMISSIONS.USER_VIEW) && (
+  <SidebarItem
     icon={<FaFlag />}
     text="Activity Logs"
     to="/activity-logs"
