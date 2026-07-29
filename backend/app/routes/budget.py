@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.user import User
 from app.services.budget_service import BudgetService
-
+from app.services.activity_log_service import ActivityLogService
 
 budget_bp = Blueprint(
     "budgets",
@@ -50,6 +50,13 @@ def create_budget():
     budget = BudgetService.create_budget(
         data
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Budget",
+    entity_id=budget.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -128,6 +135,13 @@ def update_budget(budget_id):
         budget,
         request.get_json()
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Budget",
+    entity_id=budget.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -167,6 +181,13 @@ def delete_budget(budget_id):
     BudgetService.delete_budget(
         budget
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Budget",
+    entity_id=budget.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

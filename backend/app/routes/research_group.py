@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.user import User
 from app.services.research_group_service import ResearchGroupService
-
+from app.services.activity_log_service import ActivityLogService
 
 research_group_bp = Blueprint(
     "research_groups",
@@ -43,7 +43,13 @@ def create_group():
         data,
         current_user_id
     )
-
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Research Group",
+    entity_id=group.id,
+    ip_address=request.remote_addr
+    )
     return {
         "status": "success",
         "message": "Research group created successfully",
@@ -122,7 +128,13 @@ def update_group(group_id):
         group,
         request.get_json()
     )
-
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Research Group",
+    entity_id=group.id,
+    ip_address=request.remote_addr
+)
     return {
         "status": "success",
         "message": "Research group updated successfully",
@@ -152,7 +164,13 @@ def delete_group(group_id):
         }, 403
 
     ResearchGroupService.delete_group(group)
-
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Research Group",
+    entity_id=group.id,
+    ip_address=request.remote_addr
+)
     return {
         "status": "success",
         "message": "Research group deleted successfully"

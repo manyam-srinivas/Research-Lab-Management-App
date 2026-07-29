@@ -18,9 +18,9 @@ def register():
     full_name = data.get("full_name")
     email = data.get("email")
     password = data.get("password")
-    role = data.get("role")
+    requested_role = data.get("requested_role")
 
-    if not all([full_name, email, password, role]):
+    if not all([full_name, email, password, requested_role]):
         return {
             "status": "error",
             "message": "All fields are required"
@@ -37,18 +37,20 @@ def register():
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     new_user = User(
-        full_name=full_name,
-        email=email,
-        password_hash=hashed_password,
-        role=role
-    )
+    full_name=full_name,
+    email=email,
+    password_hash=hashed_password,
+    requested_role=requested_role,
+    role=None,
+    status="Pending"
+)
 
     db.session.add(new_user)
     db.session.commit()
 
     return {
         "status": "success",
-        "message": "User registered successfully"
+        "message": "Registration submitted successfully. Please wait for administrator approval."
     }, 201
 
 
@@ -77,7 +79,25 @@ def login():
         return {
             "status": "error",
             "message": "Invalid credentials"
-        }, 401
+        }, 401 
+    
+    if user.status == "Pending":
+     return {
+        "status": "error",
+        "message": "Your account is awaiting administrator approval."
+    }, 403
+
+    if user.status == "Rejected":
+     return {
+        "status": "error",
+        "message": "Your registration request has been rejected."
+    }, 403
+
+    if user.status == "Inactive":
+     return {
+        "status": "error",
+        "message": "Your account has been deactivated."
+    }, 403
 
     token = create_access_token(identity=str(user.id))
 

@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user import User
 from app.models.project import Project
 from app.services.milestone_service import MilestoneService
-
+from app.services.activity_log_service import ActivityLogService
 
 milestone_bp = Blueprint("milestones", __name__)
 
@@ -41,6 +41,13 @@ def create_milestone():
         }, 403
 
     milestone = MilestoneService.create_milestone(data)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Milestone",
+    entity_id=milestone.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -141,6 +148,13 @@ def update_milestone(milestone_id):
         milestone,
         request.get_json()
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Milestone",
+    entity_id=milestone.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -182,6 +196,13 @@ def delete_milestone(milestone_id):
         }, 403
 
     MilestoneService.delete_milestone(milestone)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Milestone",
+    entity_id=milestone.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

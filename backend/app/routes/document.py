@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 from app.models.project import Project
 from app.services.document_service import DocumentService
-
+from app.services.activity_log_service import ActivityLogService
 
 document_bp = Blueprint("documents", __name__)
 
@@ -69,6 +69,13 @@ def upload_document():
         file_type=file.content_type,
         file_size=file_size
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Uploaded",
+    entity_type="Document",
+    entity_id=document.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -180,6 +187,13 @@ def delete_document(document_id):
         os.remove(document.file_path)
 
     DocumentService.delete_document(document)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Document",
+    entity_id=document.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

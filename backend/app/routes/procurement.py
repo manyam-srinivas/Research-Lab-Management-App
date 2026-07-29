@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user import User
 from app.models.vendor import Vendor
 from app.services.procurement_service import ProcurementService
-
+from app.services.activity_log_service import ActivityLogService
 
 procurement_bp = Blueprint(
     "procurement",
@@ -82,6 +82,13 @@ def update_request(request_id):
         procurement,
         data
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Procurement Request",
+    entity_id=procurement.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -118,6 +125,13 @@ def create_request():
         data,
         current_user_id
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Procurement Request",
+    entity_id=procurement.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -206,6 +220,13 @@ def update_status(request_id):
         status,
         current_user_id
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action=f"Status Changed to {status}",
+    entity_type="Procurement Request",
+    entity_id=procurement.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -246,6 +267,13 @@ def delete_request(request_id):
     ProcurementService.delete_request(
         procurement
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Procurement Request",
+    entity_id=procurement.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

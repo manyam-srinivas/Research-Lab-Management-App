@@ -1,8 +1,8 @@
 from flask import Blueprint, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.services.department_service import DepartmentService
-
+from app.services.activity_log_service import ActivityLogService
 department_bp = Blueprint(
     "departments",
     __name__
@@ -32,7 +32,7 @@ def get_departments():
 @department_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_department():
-
+    current_user_id = int(get_jwt_identity())
     data = request.get_json()
 
     if not data.get("name"):
@@ -42,6 +42,13 @@ def create_department():
         }, 400
 
     department = DepartmentService.create_department(data)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Department",
+    entity_id=department.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -53,6 +60,8 @@ def create_department():
 @department_bp.route("/<int:department_id>", methods=["PUT"])
 @jwt_required()
 def update_department(department_id):
+
+    current_user_id = int(get_jwt_identity())
 
     department = DepartmentService.get_department(department_id)
 
@@ -66,6 +75,13 @@ def update_department(department_id):
         department,
         request.get_json()
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Department",
+    entity_id=department.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -77,6 +93,7 @@ def update_department(department_id):
 @jwt_required()
 def delete_department(department_id):
 
+    current_user_id = int(get_jwt_identity())
     department = DepartmentService.get_department(department_id)
 
     if not department:
@@ -86,6 +103,13 @@ def delete_department(department_id):
         }, 404
 
     DepartmentService.delete_department(department)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Department",
+    entity_id=department.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

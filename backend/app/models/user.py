@@ -21,7 +21,7 @@ class User(db.Model):
             "Lab Staff",
             name="role_enum"
         ),
-        nullable=False
+        nullable=True
     )
 
     department_id = db.Column(
@@ -41,11 +41,12 @@ class User(db.Model):
 
     status = db.Column(
         db.Enum(
-            "Active",
-            "Inactive",
-            "Pending",
-            name="status_enum"
-        ),
+    "Active",
+    "Inactive",
+    "Pending",
+    "Rejected",
+    name="status_enum"
+),
         default="Pending"
     )
 
@@ -69,3 +70,22 @@ class User(db.Model):
         server_default=db.func.now(),
         onupdate=db.func.now()
     )
+    requested_role = db.Column(
+    db.Enum(
+        "Faculty",
+        "Research Scholar",
+        "Student",
+        "Lab Staff",
+        name="requested_role_enum"
+    ),
+    nullable=False
+)
+    approved_by = db.Column(
+    db.Integer,
+    db.ForeignKey("users.id"),
+    nullable=True
+)
+    approved_at = db.Column(
+    db.DateTime,
+    nullable=True
+)

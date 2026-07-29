@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user import User
 from app.models.budget import Budget
 from app.services.expense_service import ExpenseService
-
+from app.services.activity_log_service import ActivityLogService
 
 expense_bp = Blueprint(
     "expenses",
@@ -53,6 +53,13 @@ def create_expense():
         }, 404
 
     expense = ExpenseService.create_expense(data)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Expense",
+    entity_id=expense.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -134,6 +141,13 @@ def update_expense(expense_id):
         expense,
         data
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Expense",
+    entity_id=expense.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -170,6 +184,13 @@ def delete_expense(expense_id):
     ExpenseService.delete_expense(
         expense
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Expense",
+    entity_id=expense.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

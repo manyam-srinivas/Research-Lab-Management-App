@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user import User
 from app.models.equipment import Equipment
 from app.services.equipment_booking_service import EquipmentBookingService
-
+from app.services.activity_log_service import ActivityLogService
 
 equipment_booking_bp = Blueprint(
     "equipment_bookings",
@@ -69,6 +69,13 @@ def create_booking():
         data,
         current_user_id
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Equipment Booking",
+    entity_id=booking.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -168,6 +175,13 @@ def update_booking_status(booking_id):
         new_status,
         current_user_id
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action=f"Status Changed to {new_status}",
+    entity_type="Equipment Booking",
+    entity_id=booking.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -206,6 +220,13 @@ def delete_booking(booking_id):
         }, 403
 
     EquipmentBookingService.delete_booking(booking)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Equipment Booking",
+    entity_id=booking.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

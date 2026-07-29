@@ -5,7 +5,7 @@ from app.models.user import User
 from app.models.project import Project
 from app.models.milestone import Milestone
 from app.services.task_service import TaskService
-
+from app.services.activity_log_service import ActivityLogService
 
 task_bp = Blueprint("tasks", __name__)
 
@@ -51,6 +51,13 @@ def create_task():
         }, 403
 
     task = TaskService.create_task(data)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Task",
+    entity_id=task.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -150,6 +157,13 @@ def update_task(task_id):
         task,
         request.get_json()
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Task",
+    entity_id=task.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -188,6 +202,13 @@ def delete_task(task_id):
         }, 403
 
     TaskService.delete_task(task)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Task",
+    entity_id=task.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

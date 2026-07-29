@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.user import User
 from app.services.vendor_service import VendorService
-
+from app.services.activity_log_service import ActivityLogService
 
 vendor_bp = Blueprint("vendors", __name__)
 
@@ -30,6 +30,13 @@ def create_vendor():
         }, 400
 
     vendor = VendorService.create_vendor(data)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Vendor",
+    entity_id=vendor.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -116,6 +123,13 @@ def update_vendor(vendor_id):
         vendor,
         request.get_json()
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Vendor",
+    entity_id=vendor.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -145,6 +159,13 @@ def delete_vendor(vendor_id):
         }, 404
 
     VendorService.delete_vendor(vendor)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Vendor",
+    entity_id=vendor.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",

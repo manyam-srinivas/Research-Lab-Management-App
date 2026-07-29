@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.user import User
 from app.services.equipment_service import EquipmentService
-
+from app.services.activity_log_service import ActivityLogService
 
 equipment_bp = Blueprint("equipment", __name__)
 
@@ -30,6 +30,13 @@ def create_equipment():
         }, 400
 
     equipment = EquipmentService.create_equipment(data)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Created",
+    entity_type="Equipment",
+    entity_id=equipment.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -117,6 +124,13 @@ def update_equipment(equipment_id):
         equipment,
         request.get_json()
     )
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Updated",
+    entity_type="Equipment",
+    entity_id=equipment.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
@@ -147,6 +161,13 @@ def delete_equipment(equipment_id):
         }, 404
 
     EquipmentService.delete_equipment(equipment)
+    ActivityLogService.log_activity(
+    user_id=current_user_id,
+    action="Deleted",
+    entity_type="Equipment",
+    entity_id=equipment.id,
+    ip_address=request.remote_addr
+)
 
     return {
         "status": "success",
