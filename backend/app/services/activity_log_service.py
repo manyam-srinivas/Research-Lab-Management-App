@@ -20,6 +20,22 @@ class ActivityLogService:
 
         return log
     @staticmethod
+    def log_activity(
+    user_id,
+    action,
+    entity_type,
+    entity_id,
+    ip_address,
+):
+
+     return ActivityLogService.create_log({
+        "user_id": user_id,
+        "action": action,
+        "entity_type": entity_type,
+        "entity_id": entity_id,
+        "ip_address": ip_address,
+    })
+    @staticmethod
     def get_recent_logs(limit=10):
 
      return (

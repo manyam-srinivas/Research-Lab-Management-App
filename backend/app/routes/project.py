@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
 from app.services.project_service import ProjectService
-
-
+from app.services.activity_log_service import ActivityLogService
 from app.models.user import User
 
 project_bp = Blueprint("projects", __name__)
@@ -37,12 +37,6 @@ def create_project():
     data = request.get_json()
 
     title = data.get("title")
-    description = data.get("description")
-    priority = data.get("priority", "Medium")
-    visibility = data.get("visibility", "Private")
-    start_date = data.get("start_date")
-    end_date = data.get("end_date")
-    research_group_id = data.get("research_group_id")
 
     if not title:
         return {
@@ -53,6 +47,14 @@ def create_project():
     project = ProjectService.create_project(
         data,
         current_user_id
+    )
+
+    ActivityLogService.log_activity(
+        user_id=current_user_id,
+        action="Created",
+        entity_type="Project",
+        entity_id=project.id,
+        ip_address=request.remote_addr
     )
 
     return {
@@ -89,6 +91,7 @@ def get_projects():
         "projects": project_list
     }, 200
 
+
 @project_bp.route("/<int:project_id>", methods=["GET"])
 @jwt_required()
 def get_project(project_id):
@@ -115,6 +118,8 @@ def get_project(project_id):
             "created_by": project.created_by
         }
     }, 200
+
+
 @project_bp.route("/<int:project_id>", methods=["PUT"])
 @jwt_required()
 def update_project(project_id):
@@ -131,7 +136,6 @@ def update_project(project_id):
             "message": "Project not found"
         }, 404
 
-    # Only creator or Admin can edit
     if user.role != "Admin" and project.created_by != current_user_id:
         return {
             "status": "error",
@@ -141,6 +145,14 @@ def update_project(project_id):
     data = request.get_json()
 
     project = ProjectService.update_project(project, data)
+
+    ActivityLogService.log_activity(
+        user_id=current_user_id,
+        action="Updated",
+        entity_type="Project",
+        entity_id=project.id,
+        ip_address=request.remote_addr
+    )
 
     return {
         "status": "success",
@@ -154,6 +166,7 @@ def update_project(project_id):
             "status": project.status
         }
     }, 200
+
 
 @project_bp.route("/<int:project_id>", methods=["DELETE"])
 @jwt_required()
@@ -178,6 +191,14 @@ def delete_project(project_id):
         }, 403
 
     ProjectService.delete_project(project)
+
+    ActivityLogService.log_activity(
+        user_id=current_user_id,
+        action="Deleted",
+        entity_type="Project",
+        entity_id=project.id,
+        ip_address=request.remote_addr
+    )
 
     return {
         "status": "success",

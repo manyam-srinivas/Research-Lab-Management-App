@@ -114,14 +114,6 @@ const ActivityLogs = () => {
           </table>
         </div>
       )}
-
-      {hasRole(...PERMISSIONS.ACTIVITY_LOG_VIEW) && (
-  <SidebarItem
-    icon={<FaFlag />}
-    text="Activity Logs"
-    to="/activity-logs"
-  />
-)}
     </div>
   );
 };
