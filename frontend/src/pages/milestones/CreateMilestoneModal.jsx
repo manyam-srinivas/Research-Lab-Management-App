@@ -106,8 +106,8 @@ function CreateMilestoneModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-xl p-6">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
 
         <h2 className="text-2xl font-bold mb-6">
           {isEditing ? "Edit Milestone" : "Create Milestone"}
@@ -175,7 +175,7 @@ function CreateMilestoneModal({
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}

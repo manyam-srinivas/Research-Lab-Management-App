@@ -20,7 +20,7 @@ import {
 
 function Sidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-slate-900 text-white">
+    <aside className="w-64 h-screen bg-slate-900 text-white overflow-y-auto">
 
       {/* Logo */}
       <div className="p-6 border-b border-slate-800">

@@ -164,7 +164,7 @@ setIsModalOpen(true);
 
       <div className="overflow-x-auto bg-white rounded-lg shadow">
 
-        <table className="w-full">
+        <table className="min-w-[1000px] w-full">
 
           <thead className="bg-gray-100">
 

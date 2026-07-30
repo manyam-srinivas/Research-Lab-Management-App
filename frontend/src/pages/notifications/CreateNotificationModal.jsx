@@ -68,9 +68,9 @@ export default function CreateNotificationModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50">
 
-      <div className="bg-white rounded-lg p-6 w-[500px]">
+      <div className="bg-white rounded-lg w-full max-w-[500px] p-6 md:p-8 max-h-[90vh] overflow-y-auto">
 
         <h2 className="text-xl font-bold mb-4">
           Create Notification
@@ -132,7 +132,7 @@ export default function CreateNotificationModal({
             required
           />
 
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col sm:flex-row justify-end gap-2">
 
             <button
               type="button"

@@ -118,8 +118,8 @@ function Milestones() {
         </select>
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full">
+      <div className="bg-white rounded-xl shadow overflow-x-auto ">
+        <table className="min-w-[1000px] w-full">
           <thead className="bg-slate-100">
             <tr>
               <th className="p-4 text-left">

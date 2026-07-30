@@ -93,8 +93,8 @@ const CreateProjectMemberModal = ({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
 
         <h2 className="text-xl font-bold mb-4">
           {isEditing ? "Edit Project Member" : "Add Project Member"}
@@ -150,7 +150,7 @@ const CreateProjectMemberModal = ({
             </select>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
 
             <button
               type="button"
