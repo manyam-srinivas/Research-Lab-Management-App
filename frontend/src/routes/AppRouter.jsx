@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PERMISSIONS } from "../utils/rbac";
-import Login from "../pages/Login/Login";
-import Dashboard from "../pages/Dashboard/Dashboard";
+import Login from "../pages/login/Login";
+import Dashboard from "../pages/dashboard/Dashboard";
 import DashboardLayout from "../pages/DashboardLayout";
 import Milestones from "../pages/milestones/Milestones";
 import Projects from "../pages/Projects/Projects";
