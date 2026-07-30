@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getEquipment } from "../../services/equipmentService";
 import { createBooking } from "../../services/equipmentBookingService";
-
+import { showError } from "../../utils/toast";
 export default function CreateBookingModal({
   open,
   onClose,
@@ -61,7 +61,7 @@ export default function CreateBookingModal({
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Failed to create booking");
+      showError("Failed to create booking");
     }
   };
 

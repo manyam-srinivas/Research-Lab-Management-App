@@ -3,6 +3,7 @@ import activityLogService from "../../services/activityLogService";
 import CreateActivityLogModal from "./CreateActivityLogModal";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
+import { showSuccess, showError } from "../../utils/toast";
 const ActivityLogs = () => {
   const [logs, setLogs] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -15,7 +16,7 @@ const ActivityLogs = () => {
       setLogs(response.logs || []);
     } catch (error) {
       console.error("Error fetching activity logs:", error);
-      alert("Failed to load activity logs.");
+      showError("Failed to load activity logs.");
     } finally {
       setLoading(false);
     }
@@ -33,7 +34,7 @@ const ActivityLogs = () => {
       fetchLogs();
     } catch (error) {
       console.error(error);
-      alert("Failed to delete activity log.");
+      showError("Failed to delete activity log.");
     }
   };
 

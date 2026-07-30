@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError } from "../../utils/toast";
 
 
 import {
@@ -95,7 +95,7 @@ function Procurement() {
 
       console.error(error);
 
-      alert(
+      showError(
         error.response?.data?.message ||
           "Delete failed"
       );

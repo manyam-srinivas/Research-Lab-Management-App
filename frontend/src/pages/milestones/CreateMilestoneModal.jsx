@@ -3,6 +3,7 @@ import {
   createMilestone,
   updateMilestone,
 } from "../../services/milestoneService";
+import { showError, showSuccess } from "../../utils/toast";
 
 function CreateMilestoneModal({
   isOpen,
@@ -72,14 +73,14 @@ function CreateMilestoneModal({
         payload
       );
 
-      alert("Milestone updated successfully!");
+      showSuccess("Milestone updated successfully!");
     } else {
       await createMilestone(
         token,
         payload
       );
 
-      alert("Milestone created successfully!");
+      showSuccess("Milestone created successfully!");
     }
 
     setFormData({
@@ -96,7 +97,7 @@ function CreateMilestoneModal({
   } catch (error) {
     console.error(error);
 
-    alert(
+    showError(
       isEditing
         ? "Failed to update milestone"
         : "Failed to create milestone"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError, showSuccess } from "../../utils/toast";
 import {
   getBudgets,
   deleteBudget,
@@ -61,10 +61,10 @@ function Budget() {
     } catch (error) {
       console.error(error);
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to delete budget"
-      );
+      showError(
+  error.response?.data?.message ||
+    "Failed to delete budget"
+);
     }
   };
 

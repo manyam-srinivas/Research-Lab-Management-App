@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError } from "../../utils/toast";
 import { getDepartments } from "../../services/departmentService";
 
 import {
@@ -74,7 +74,7 @@ function Expenses() {
     } catch (error) {
       console.error(error);
 
-      alert(
+      showError(
         error.response?.data?.message ||
           "Failed to delete expense"
       );

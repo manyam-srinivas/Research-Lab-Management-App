@@ -3,6 +3,7 @@ import {
   createProcurementRequest,
   updateProcurementRequest,
 } from "../../services/procurementService";
+import { showError, showSuccess } from "../../utils/toast";
 
 function CreateProcurementModal({
   isOpen,
@@ -74,14 +75,14 @@ function CreateProcurementModal({
         payload
       );
 
-      alert("Procurement request updated successfully!");
+      showSuccess("Procurement request updated successfully!");
     } else {
       await createProcurementRequest(
         token,
         payload
       );
 
-      alert("Procurement request created successfully!");
+      showSuccess("Procurement request created successfully!");
     }
 
     setFormData({
@@ -98,7 +99,7 @@ function CreateProcurementModal({
   } catch (error) {
     console.error(error);
 
-    alert(
+    showError(
       error.response?.data?.message ||
       (isEditing
         ? "Failed to update request"

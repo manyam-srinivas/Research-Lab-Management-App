@@ -7,7 +7,7 @@ import {
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
 import CreateNotificationModal from "./CreateNotificationModal";
-
+import { showError } from "../../utils/toast";
 export default function Notifications() {
   const token = localStorage.getItem("token");
   
@@ -34,7 +34,7 @@ export default function Notifications() {
       loadNotifications();
     } catch (err) {
       console.error(err);
-      alert("Unable to mark notification as read");
+      showError("Unable to mark notification as read");
     }
   };
 
@@ -46,7 +46,7 @@ export default function Notifications() {
       loadNotifications();
     } catch (err) {
       console.error(err);
-      alert("Unable to delete notification");
+      showError("Unable to delete notification");
     }
   };
 

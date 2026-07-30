@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { showError, showSuccess } from "../../utils/toast";
 import {
   createResearchGroup,
   updateResearchGroup,
@@ -78,14 +78,14 @@ function CreateResearchGroupModal({
         payload
       );
 
-      alert("Research Group updated successfully!");
+      showSuccess("Research Group updated successfully!");
     } else {
       await createResearchGroup(
         token,
         payload
       );
 
-      alert("Research Group created successfully!");
+      showSuccess("Research Group created successfully!");
     }
 
     setFormData({
@@ -98,7 +98,7 @@ function CreateResearchGroupModal({
     onGroupCreated();
 
   } catch (error) {
-    alert(
+    showError(
       error.response?.data?.message ||
       (isEditing
         ? "Failed to update research group"

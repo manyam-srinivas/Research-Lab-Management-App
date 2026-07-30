@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError } from "../../utils/toast";
 import {
   getDepartments,
   deleteDepartment,
@@ -47,7 +47,7 @@ function Departments() {
 
     } catch (error) {
       console.error(error);
-      alert("Failed to delete department");
+      showError("Failed to delete department");
     }
   };
   const handleEdit = (department) => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { showSuccess, showError } from "../../utils/toast";
 import {
   createBudget,
   updateBudget,
@@ -61,14 +61,14 @@ function CreateBudgetModal({
         payload
       );
 
-      alert("Budget updated successfully!");
+      showSuccess("Budget updated successfully!");
     } else {
       await createBudget(
         token,
         payload
       );
 
-      alert("Budget created successfully!");
+      showSuccess("Budget created successfully!");
     }
 
     setFormData({
@@ -83,12 +83,12 @@ function CreateBudgetModal({
   } catch (error) {
     console.error(error);
 
-    alert(
-      error.response?.data?.message ||
-      (isEditing
-        ? "Failed to update budget"
-        : "Failed to create budget")
-    );
+    showError(
+  error.response?.data?.message ||
+  (isEditing
+    ? "Failed to update budget"
+    : "Failed to create budget")
+);
   }
 };
 

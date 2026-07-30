@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError } from "../../utils/toast";
 
 import {
   getVendors,
@@ -53,7 +53,7 @@ function Vendors() {
     } catch (error) {
 
       console.error(error);
-      alert("Failed to delete vendor");
+      showError("Failed to delete vendor");
 
     }
   };

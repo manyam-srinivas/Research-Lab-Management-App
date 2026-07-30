@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { showError, showSuccess } from "../../utils/toast";
 import {
   createTask,
   updateTask,
@@ -78,14 +78,14 @@ function CreateTaskModal({
         payload
       );
 
-      alert("Task updated successfully!");
+      showSuccess("Task updated successfully!");
     } else {
       await createTask(
         token,
         payload
       );
 
-      alert("Task created successfully!");
+      showSuccess("Task created successfully!");
     }
 
     setFormData({
@@ -103,7 +103,7 @@ function CreateTaskModal({
   } catch (error) {
     console.error(error);
 
-    alert(
+    showError(
       isEditing
         ? "Failed to update task"
         : "Failed to create task"

@@ -3,6 +3,7 @@ import {
   createProject,
   updateProject,
 } from "../../services/projectService";
+import { showError, showSuccess } from "../../utils/toast";
 
 function CreateProjectModal({
   isOpen,
@@ -59,11 +60,11 @@ function CreateProjectModal({
     if (isEditing) {
       await updateProject(token, project.id, formData);
 
-      alert("Project updated successfully!");
+      showSuccess("Project updated successfully!");
     } else {
       await createProject(token, formData);
 
-      alert("Project created successfully!");
+      showSuccess("Project created successfully!");
     }
 
     setFormData({
@@ -80,7 +81,7 @@ function CreateProjectModal({
     onProjectCreated();
 
   } catch (error) {
-    alert(
+    showError(
       error.response?.data?.message ||
       (isEditing
         ? "Failed to update project"

@@ -3,7 +3,7 @@ import {
   createVendor,
   updateVendor,
 } from "../../services/vendorService";
-
+import { showError, showSuccess } from "../../utils/toast";
 function CreateVendorModal({
   isOpen,
   onClose,
@@ -65,14 +65,14 @@ function CreateVendorModal({
         formData
       );
 
-      alert("Vendor updated successfully!");
+      showSuccess("Vendor updated successfully!");
     } else {
       await createVendor(
         token,
         formData
       );
 
-      alert("Vendor created successfully!");
+      showSuccess("Vendor created successfully!");
     }
 
     setFormData({
@@ -89,7 +89,7 @@ function CreateVendorModal({
 
   } catch (error) {
 
-    alert(
+    showError(
       error.response?.data?.message ||
       (isEditing
         ? "Failed to update vendor"

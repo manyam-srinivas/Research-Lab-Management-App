@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { showError, showSuccess } from "../../utils/toast";
 import {
   addProjectMember,
   updateProjectMember,
@@ -47,7 +47,7 @@ const CreateProjectMemberModal = ({
   e.preventDefault();
 
   if (!formData.user_id) {
-    alert("Please select a user.");
+    showError("Please select a user.");
     return;
   }
 
@@ -63,7 +63,7 @@ const CreateProjectMemberModal = ({
         }
       );
 
-      alert("Member updated successfully.");
+      showSuccess("Member updated successfully.");
     } else {
       await addProjectMember(token, {
         project_id: Number(projectId),
@@ -71,7 +71,7 @@ const CreateProjectMemberModal = ({
         member_type: formData.member_type,
       });
 
-      alert("Member added successfully.");
+      showSuccess("Member added successfully.");
     }
 
     setFormData({
@@ -84,7 +84,7 @@ const CreateProjectMemberModal = ({
   } catch (err) {
     console.error(err);
 
-    alert(
+    showError(
       isEditing
         ? "Failed to update member."
         : "Failed to add member."

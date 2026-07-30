@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError } from "../../utils/toast";
 import {
   getAllBookings,
   getMyBookings,
@@ -67,7 +67,7 @@ export default function EquipmentBookings() {
       loadData();
     } catch (err) {
       console.error(err);
-      alert("Unable to delete booking");
+      showError("Unable to delete booking");
     }
   };
 
@@ -77,7 +77,7 @@ export default function EquipmentBookings() {
       loadData();
     } catch (err) {
       console.error(err);
-      alert("Unable to update booking");
+      showError("Unable to update booking");
     }
   };
 

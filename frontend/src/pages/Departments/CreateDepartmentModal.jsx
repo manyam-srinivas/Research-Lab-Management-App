@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { showSuccess, showError } from "../../utils/toast";
 import {
   createDepartment,
   updateDepartment,
@@ -48,14 +49,14 @@ function CreateDepartmentModal({
         formData
       );
 
-      alert("Department updated successfully!");
+      showSuccess("Department updated successfully!");
     } else {
       await createDepartment(
         token,
         formData
       );
 
-      alert("Department created successfully!");
+      showSuccess("Department created successfully!");
     }
 
     setFormData({
@@ -63,16 +64,16 @@ function CreateDepartmentModal({
       description: "",
     });
 
-    onClose();
-    onDepartmentCreated();
+   onDepartmentCreated();
+onClose();
 
   } catch (error) {
-    alert(
-      error.response?.data?.message ||
-      (isEditing
-        ? "Failed to update department"
-        : "Failed to create department")
-    );
+    showError(
+  error.response?.data?.message ||
+  (isEditing
+    ? "Failed to update department"
+    : "Failed to create department")
+);
   }
 };
 

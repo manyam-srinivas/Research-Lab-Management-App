@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaUpload, FaDownload, FaTrash } from "react-icons/fa";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
+import { showError } from "../../utils/toast";
 import {
   getProjectDocuments,
   deleteDocument,
@@ -31,7 +32,7 @@ const Documents = () => {
       setProjects(res.projects);
     } catch (err) {
       console.error(err);
-      alert("Failed to load projects");
+      showError("Failed to load projects");
     }
   };
 
@@ -49,7 +50,7 @@ const Documents = () => {
       setDocuments(res.documents);
     } catch (err) {
       console.error(err);
-      alert("Failed to load documents");
+      showError("Failed to load documents");
     } finally {
       setLoading(false);
     }
@@ -71,10 +72,10 @@ const Documents = () => {
 
       fetchDocuments(selectedProject);
 
-      alert("Document deleted successfully");
+      showSuccess("Document deleted successfully");
     } catch (err) {
       console.error(err);
-      alert("Failed to delete document");
+      showError("Failed to delete document");
     }
   };
 
@@ -99,7 +100,7 @@ const Documents = () => {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
-      alert("Download failed");
+      showError("Download failed");
     }
   };
 
@@ -116,7 +117,7 @@ const Documents = () => {
   <button
     onClick={() => {
       if (!selectedProject) {
-        alert("Please select a project first");
+        showError("Please select a project first");
         return;
       }
 

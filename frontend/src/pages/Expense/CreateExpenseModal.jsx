@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { showError, showSuccess } from "../../utils/toast";
 import {
   createExpense,
   updateExpense,
@@ -74,14 +74,14 @@ function CreateExpenseModal({
         payload
       );
 
-      alert("Expense updated successfully!");
+      showSuccess("Expense updated successfully!");
     } else {
       await createExpense(
         token,
         payload
       );
 
-      alert("Expense created successfully!");
+      showSuccess("Expense created successfully!");
     }
 
     setFormData({
@@ -98,7 +98,7 @@ function CreateExpenseModal({
   } catch (error) {
     console.error(error);
 
-    alert(
+    showError(
       error.response?.data?.message ||
       (isEditing
         ? "Failed to update expense"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/authService";
-
+import { showError, showSuccess } from "../../utils/toast";
 function RegisterForm() {
   const navigate = useNavigate();
 
@@ -21,12 +21,12 @@ function RegisterForm() {
       !confirmPassword ||
       !requestedRole
     ) {
-      alert("Please fill in all fields.");
+      showError("Please fill in all fields.");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      showError("Passwords do not match.");
       return;
     }
 
@@ -38,11 +38,11 @@ function RegisterForm() {
         requested_role: requestedRole,
       });
 
-      alert(response.message);
+      showSuccess(response.message);
 
       navigate("/");
     } catch (error) {
-      alert(
+      showError(
         error.response?.data?.message ||
           "Registration failed."
       );

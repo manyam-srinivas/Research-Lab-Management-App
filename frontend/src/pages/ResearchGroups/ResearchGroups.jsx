@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError} from "../../utils/toast";
 import {
   getResearchGroups,
   deleteResearchGroup,
@@ -63,7 +63,7 @@ function ResearchGroups() {
 
     } catch (error) {
       console.error(error);
-      alert("Failed to delete research group");
+      showError("Failed to delete research group");
     }
   };
   const handleEdit = (group) => {

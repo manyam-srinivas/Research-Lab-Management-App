@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
+import { showSuccess, showError } from "../../utils/toast";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -11,23 +12,23 @@ function LoginForm() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const data = await loginUser(email, password);
+  try {
+    const data = await loginUser(email, password);
 
-      login(data.user, data.token);
+    login(data.user, data.token);
 
-      alert("Login Successful!");
+    showSuccess("Login Successful!");
 
-      navigate("/dashboard");
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Login failed"
-      );
-    }
-  };
+    navigate("/dashboard");
+  } catch (error) {
+    showError(
+      error.response?.data?.message ||
+      "Login failed"
+    );
+  }
+};
 
   return (
     <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">

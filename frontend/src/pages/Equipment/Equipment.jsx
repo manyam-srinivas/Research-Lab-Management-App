@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError } from "../../utils/toast";
 import {
   getEquipment,
   deleteEquipment,
@@ -47,7 +47,7 @@ function Equipment() {
 
     } catch (error) {
       console.error(error);
-      alert("Failed to delete equipment");
+      showError("Failed to delete equipment");
     }
   };
 

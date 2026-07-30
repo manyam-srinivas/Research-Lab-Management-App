@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
-
+import { showError, showSuccess } from "../../utils/toast"; 
 import { getProjects } from "../../services/projectService";
 import { getUsers } from "../../services/userService";
 import { hasRole } from "../../utils/permissions";
@@ -41,7 +41,7 @@ const ProjectMembers = () => {
       setUsers(userRes.users);
     } catch (err) {
       console.error(err);
-      alert("Failed to load data");
+      showError("Failed to load data");
     }
   };
 
@@ -62,7 +62,7 @@ const ProjectMembers = () => {
       setMembers(res.members);
     } catch (err) {
       console.error(err);
-      alert("Failed to load members");
+      showError("Failed to load members");
     } finally {
       setLoading(false);
     }
@@ -96,10 +96,10 @@ const ProjectMembers = () => {
 
       fetchMembers(selectedProject);
 
-      alert("Member removed successfully");
+      showSuccess("Member removed successfully");
     } catch (err) {
       console.error(err);
-      alert("Failed to remove member");
+      showError("Failed to remove member");
     }
   };
 
@@ -122,7 +122,7 @@ const ProjectMembers = () => {
   <button
     onClick={() => {
       if (!selectedProject) {
-        alert("Please select a project");
+        showError("Please select a project");
         return;
       }
 

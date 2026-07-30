@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { showError } from "../../utils/toast";
 import { getProjects } from "../../services/projectService";
 import { getProjectMilestones } from "../../services/milestoneService";
 import {
@@ -95,7 +95,7 @@ function Tasks() {
       fetchTasks(selectedMilestone);
     } catch (error) {
       console.error(error);
-      alert("Failed to delete task");
+      showError("Failed to delete task");
     }
   };
 

@@ -8,6 +8,7 @@ import {
   activateUser,
   deactivateUser,
 } from "../../services/userService";
+import { showError, showSuccess } from "../../utils/toast";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -28,7 +29,7 @@ response.users.forEach((user) => {
 setSelectedRoles(roles);
     } catch (error) {
       console.error(error);
-      alert("Failed to load users.");
+      showError("Failed to load users.");
     }
   };
 
@@ -38,7 +39,7 @@ setSelectedRoles(roles);
       setPendingUsers(response.users);
     } catch (error) {
       console.error(error);
-      alert("Failed to load pending users.");
+      showError("Failed to load pending users.");
     }
   };
 
@@ -52,13 +53,13 @@ setSelectedRoles(roles);
     try {
       await approveUser(user.id, user.requested_role);
 
-      alert("User approved successfully.");
+      showSuccess("User approved successfully.");
 
       fetchPendingUsers();
       fetchUsers();
     } catch (error) {
       console.error(error);
-      alert(
+      showError(
         error.response?.data?.message ||
           "Failed to approve user."
       );
@@ -75,13 +76,13 @@ setSelectedRoles(roles);
     try {
       await rejectUser(user.id);
 
-      alert("User rejected successfully.");
+      showSuccess("User rejected successfully.");
 
       fetchPendingUsers();
       fetchUsers();
     } catch (error) {
       console.error(error);
-      alert(
+      showError(
         error.response?.data?.message ||
           "Failed to reject user."
       );
@@ -94,13 +95,13 @@ setSelectedRoles(roles);
       selectedRoles[user.id]
     );
 
-    alert("User role updated successfully.");
+    showSuccess("User role updated successfully.");
 
     fetchUsers();
   } catch (error) {
     console.error(error);
 
-    alert(
+    showError(
       error.response?.data?.message ||
       "Failed to update role."
     );
@@ -110,17 +111,17 @@ const handleStatusToggle = async (user) => {
   try {
     if (user.status === "Active") {
       await deactivateUser(user.id);
-      alert("User deactivated successfully.");
+      showSuccess("User deactivated successfully.");
     } else {
       await activateUser(user.id);
-      alert("User activated successfully.");
+      showSuccess("User activated successfully.");
     }
 
     fetchUsers();
   } catch (error) {
     console.error(error);
 
-    alert(
+    showError(
       error.response?.data?.message ||
       "Operation failed."
     );

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUsers } from "../../services/userService";
 import { createNotification } from "../../services/notificationService";
-
+import { showError } from "../../utils/toast";
 export default function CreateNotificationModal({
   open,
   onClose,
@@ -61,7 +61,7 @@ export default function CreateNotificationModal({
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Failed to create notification");
+      showError("Failed to create notification");
     }
   };
 

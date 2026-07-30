@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { showSuccess, showError } from "../../utils/toast";
 import {
   createEquipment,
   updateEquipment,
@@ -68,14 +68,14 @@ function CreateEquipmentModal({
         formData
       );
 
-      alert("Equipment updated successfully!");
+      showSuccess("Equipment updated successfully!");
     } else {
       await createEquipment(
         token,
         formData
       );
 
-      alert("Equipment created successfully!");
+      showSuccess("Equipment created successfully!");
     }
 
     setFormData({
@@ -92,7 +92,7 @@ function CreateEquipmentModal({
     onEquipmentCreated();
 
   } catch (error) {
-    alert(
+    showError(
       error.response?.data?.message ||
       (isEditing
         ? "Failed to update equipment"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { hasRole } from "../../utils/permissions";
 import { PERMISSIONS } from "../../utils/rbac";
-
+import { showError } from "../../utils/toast";
 import {
   getProjects,
   deleteProject,
@@ -48,7 +48,7 @@ function Projects() {
       fetchProjects();
     } catch (error) {
       console.error(error);
-      alert("Failed to delete project");
+      showError("Failed to delete project");
     }
   };
 

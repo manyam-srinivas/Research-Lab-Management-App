@@ -1,6 +1,6 @@
 import { useState } from "react";
 import activityLogService from "../../services/activityLogService";
-
+import { showSuccess, showError } from "../../utils/toast";
 const CreateActivityLogModal = ({ onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     action: "",
@@ -30,12 +30,12 @@ const CreateActivityLogModal = ({ onClose, onSuccess }) => {
           : null,
       });
 
-      alert("Activity log created successfully.");
+      showSuccess("Activity log created successfully.");
 
       onSuccess();
     } catch (error) {
       console.error(error);
-      alert("Failed to create activity log.");
+      showError("Failed to create activity log.");
     } finally {
       setLoading(false);
     }

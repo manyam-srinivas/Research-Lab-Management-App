@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { uploadDocument } from "../../services/documentService";
-
+import { showError, showSuccess } from "../../utils/toast";
 const CreateDocumentModal = ({
   isOpen,
   onClose,
@@ -17,7 +17,7 @@ const CreateDocumentModal = ({
     e.preventDefault();
 
     if (!file) {
-      alert("Please select a file");
+      showError("Please select a file");
       return;
     }
 
@@ -31,14 +31,14 @@ const CreateDocumentModal = ({
 
       await uploadDocument(token, formData);
 
-      alert("Document uploaded successfully");
+      showSuccess("Document uploaded successfully");
 
       setFile(null);
 
       onSuccess();
     } catch (err) {
       console.error(err);
-      alert("Failed to upload document");
+      showError("Failed to upload document");
     } finally {
       setUploading(false);
     }
