@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-import Sidebar from "../components/layout/Sidebar";
-import Navbar from "../components/layout/Navbar";
+import Sidebar from "../components/layout/sidebar";
+import Navbar from "../components/layout/navbar";
 
 function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
