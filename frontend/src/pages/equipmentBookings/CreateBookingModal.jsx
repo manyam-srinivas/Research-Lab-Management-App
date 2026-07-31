@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import { getEquipment } from "../../services/equipmentService";
 import { createBooking } from "../../services/equipmentBookingService";
 import { showError } from "../../utils/toast";
@@ -65,93 +70,97 @@ export default function CreateBookingModal({
     }
   };
 
-  if (!open) return null;
+  
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={open}
+    onClose={onClose}
+    title="Book Equipment"
+    size="max-w-lg"
+  >
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4"
+    >
 
-      <div className="bg-white w-full max-w-[500px] rounded p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Equipment
+        </label>
 
-        <h2 className="text-xl font-bold mb-4">
-          Book Equipment
-        </h2>
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
+        <select
+          name="equipment_id"
+          value={formData.equipment_id}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+          required
         >
+          <option value="">
+            Select Equipment
+          </option>
 
-          <select
-            name="equipment_id"
-            value={formData.equipment_id}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          >
-            <option value="">
-              Select Equipment
+          {equipment.map((item) => (
+            <option
+              key={item.id}
+              value={item.id}
+            >
+              {item.name}
             </option>
+          ))}
+        </select>
+      </div>
 
-            {equipment.map((item) => (
-              <option
-                key={item.id}
-                value={item.id}
-              >
-                {item.name}
-              </option>
-            ))}
-          </select>
+      <Input
+        label="Start Time"
+        type="datetime-local"
+        name="start_time"
+        value={formData.start_time}
+        onChange={handleChange}
+        required
+      />
 
-          <input
-            type="datetime-local"
-            name="start_time"
-            value={formData.start_time}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
+      <Input
+        label="End Time"
+        type="datetime-local"
+        name="end_time"
+        value={formData.end_time}
+        onChange={handleChange}
+        required
+      />
 
-          <input
-            type="datetime-local"
-            name="end_time"
-            value={formData.end_time}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Purpose
+        </label>
 
-          <textarea
-            name="purpose"
-            value={formData.purpose}
-            onChange={handleChange}
-            placeholder="Purpose"
-            className="w-full border p-2 rounded"
-            rows={4}
-          />
+        <textarea
+          name="purpose"
+          value={formData.purpose}
+          onChange={handleChange}
+          placeholder="Purpose"
+          rows={4}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
 
-          <div className="flex flex-col sm:flex-row justify-end gap-2">
+      <div className="flex justify-end gap-3 pt-2">
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Book
-            </button>
-
-          </div>
-
-        </form>
+        <Button type="submit">
+          Book
+        </Button>
 
       </div>
 
-    </div>
-  );
+    </form>
+  </Modal>
+);
 }

@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import { getUsers } from "../../services/userService";
 import { createNotification } from "../../services/notificationService";
 import { showError } from "../../utils/toast";
@@ -65,96 +70,100 @@ export default function CreateNotificationModal({
     }
   };
 
-  if (!open) return null;
+  
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={open}
+    onClose={onClose}
+    title="Create Notification"
+    size="max-w-lg"
+  >
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4"
+    >
 
-      <div className="bg-white rounded-lg w-full max-w-[500px] p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          User
+        </label>
 
-        <h2 className="text-xl font-bold mb-4">
-          Create Notification
-        </h2>
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
+        <select
+          name="user_id"
+          value={formData.user_id}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+          required
         >
+          <option value="">
+            Select User
+          </option>
 
-          <select
-            name="user_id"
-            value={formData.user_id}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          >
-            <option value="">
-              Select User
+          {users.map((user) => (
+            <option
+              key={user.id}
+              value={user.id}
+            >
+              {user.full_name}
             </option>
+          ))}
+        </select>
+      </div>
 
-            {users.map((user) => (
-              <option
-                key={user.id}
-                value={user.id}
-              >
-                {user.full_name}
-              </option>
-            ))}
-          </select>
+      <Input
+        label="Title"
+        type="text"
+        name="title"
+        placeholder="Notification Title"
+        value={formData.title}
+        onChange={handleChange}
+        required
+      />
 
-          <input
-            type="text"
-            name="title"
-            placeholder="Title"
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Message
+        </label>
 
-          <textarea
-            name="message"
-            placeholder="Message"
-            value={formData.message}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            rows={4}
-            required
-          />
+        <textarea
+          name="message"
+          placeholder="Notification Message"
+          value={formData.message}
+          onChange={handleChange}
+          rows={4}
+          required
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
 
-          <input
-            type="text"
-            name="type"
-            placeholder="Type (Task, Budget, Equipment...)"
-            value={formData.type}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
+      <Input
+        label="Type"
+        type="text"
+        name="type"
+        placeholder="Task, Budget, Equipment..."
+        value={formData.type}
+        onChange={handleChange}
+        required
+      />
 
-          <div className="flex flex-col sm:flex-row justify-end gap-2">
+      <div className="flex justify-end gap-3 pt-2">
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Create
-            </button>
-
-          </div>
-
-        </form>
+        <Button type="submit">
+          Create
+        </Button>
 
       </div>
 
-    </div>
-  );
+    </form>
+  </Modal>
+);
 }

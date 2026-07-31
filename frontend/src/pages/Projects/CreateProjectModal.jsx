@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import {
   createProject,
   updateProject,
 } from "../../services/projectService";
+
 import { showError, showSuccess } from "../../utils/toast";
 
 function CreateProjectModal({
@@ -45,7 +50,7 @@ function CreateProjectModal({
   }
 }, [project, isEditing]);
 
-  if (!isOpen) return null;
+  
   const handleChange = (e) => {
   setFormData({
     ...formData,
@@ -91,103 +96,109 @@ function CreateProjectModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={isEditing ? "Edit Project" : "Create Project"}
+  >
+    <div className="space-y-4">
 
-      <div className="bg-white w-full max-w-2xl rounded-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <Input
+        label="Project Title"
+        name="title"
+        placeholder="Enter project title"
+        value={formData.title}
+        onChange={handleChange}
+      />
 
-        <div className="flex justify-between items-center mb-6">
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Description
+        </label>
 
-          <h2 className="text-2xl font-bold">
-  {isEditing ? "Edit Project" : "Create Project"}
-</h2>
+        <textarea
+          name="description"
+          placeholder="Enter project description"
+          value={formData.description}
+          onChange={handleChange}
+          rows={4}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
 
-          <button onClick={onClose}>
-            ✕
-          </button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        </div>
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Priority
+          </label>
 
-        <div className="space-y-4">
-
-          <input
-            name="title"
-            placeholder="Project Title"
-            value={formData.title}
+          <select
+            name="priority"
+            value={formData.priority}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          >
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+        </div>
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={formData.description}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Visibility
+          </label>
+
+          <select
+            name="visibility"
+            value={formData.visibility}
             onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <select
-              name="priority"
-              value={formData.priority}
-              onChange={handleChange}
-              className="border rounded-lg p-3"
-            >
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
-            </select>
-
-            <select
-              name="visibility"
-              value={formData.visibility}
-              onChange={handleChange}
-              className="border rounded-lg p-3"
-            >
-              <option>Private</option>
-              <option>Public</option>
-            </select>
-
-            <input
-              type="date"
-              name="start_date"
-              value={formData.start_date}
-              onChange={handleChange}
-              className="border rounded-lg p-3"
-            />
-
-            <input
-              type="date"
-              name="end_date"
-              value={formData.end_date}
-              onChange={handleChange}
-              className="border rounded-lg p-3"
-            />
-
-          </div>
-
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          >
+            <option>Private</option>
+            <option>Public</option>
+          </select>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-          <button
-            onClick={onClose}
-            className="border px-5 py-2 rounded-lg"
-          >
-            Cancel
-          </button>
+        <Input
+          label="Start Date"
+          type="date"
+          name="start_date"
+          value={formData.start_date}
+          onChange={handleChange}
+        />
 
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg"
-          >
-            {isEditing ? "Update Project" : "Create Project"}
-          </button>
+        <Input
+          label="End Date"
+          type="date"
+          name="end_date"
+          value={formData.end_date}
+          onChange={handleChange}
+        />
 
-        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-2">
+
+        <Button
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+
+        <Button
+          onClick={handleSubmit}
+        >
+          {isEditing ? "Update Project" : "Create Project"}
+        </Button>
 
       </div>
 
     </div>
-  );
+  </Modal>
+);
 }
 
 export default CreateProjectModal;

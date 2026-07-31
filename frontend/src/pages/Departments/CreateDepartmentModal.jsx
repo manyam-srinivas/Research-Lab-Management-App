@@ -1,4 +1,9 @@
 import { useState, useEffect } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import { showSuccess, showError } from "../../utils/toast";
 import {
   createDepartment,
@@ -29,7 +34,7 @@ function CreateDepartmentModal({
     });
   }
 }, [department, isEditing]);
-  if (!isOpen) return null;
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -78,69 +83,57 @@ onClose();
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={isEditing ? "Edit Department" : "Create Department"}
+    size="max-w-xl"
+  >
+    <div className="space-y-4">
 
-      <div className="bg-white w-full max-w-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
+      <Input
+        label="Department Name"
+        name="name"
+        placeholder="Enter department name"
+        value={formData.name}
+        onChange={handleChange}
+      />
 
-        <div className="flex justify-between items-center mb-6">
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Description
+        </label>
 
-          <h2 className="text-2xl font-bold">
-            {isEditing
-  ? "Edit Department"
-  : "Create Department"}
-          </h2>
+        <textarea
+          name="description"
+          placeholder="Enter department description"
+          value={formData.description}
+          onChange={handleChange}
+          rows={4}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
 
-          <button onClick={onClose}>
-            ✕
-          </button>
+      <div className="flex justify-end gap-3 pt-2">
 
-        </div>
+        <Button
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-        <div className="space-y-4">
-
-          <input
-            type="text"
-            name="name"
-            placeholder="Department Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <textarea
-            name="description"
-            placeholder="Department Description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-
-          <button
-            onClick={onClose}
-            className="border px-5 py-2 rounded-lg"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg"
-          >
-            {isEditing
-  ? "Update Department"
-  : "Create Department"}
-          </button>
-
-        </div>
+        <Button onClick={handleSubmit}>
+          {isEditing
+            ? "Update Department"
+            : "Create Department"}
+        </Button>
 
       </div>
 
     </div>
-  );
+  </Modal>
+);
 }
 
 export default CreateDepartmentModal;

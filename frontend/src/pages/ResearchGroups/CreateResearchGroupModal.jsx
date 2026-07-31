@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import { showError, showSuccess } from "../../utils/toast";
+
 import {
   createResearchGroup,
   updateResearchGroup,
 } from "../../services/researchGroupService";
+
 import { getDepartments } from "../../services/departmentService";
 
 function CreateResearchGroupModal({
@@ -60,7 +67,7 @@ function CreateResearchGroupModal({
     [e.target.name]: e.target.value,
   });
 };
-  if (!isOpen) return null;
+  
 
   const handleSubmit = async () => {
   try {
@@ -108,90 +115,89 @@ function CreateResearchGroupModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={
+      isEditing
+        ? "Edit Research Group"
+        : "Create Research Group"
+    }
+    size="max-w-xl"
+  >
+    <div className="space-y-4">
 
-      <div className="bg-white w-full max-w-xl rounded-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <Input
+        label="Research Group Name"
+        type="text"
+        name="name"
+        placeholder="Research Group Name"
+        value={formData.name}
+        onChange={handleChange}
+      />
 
-        <div className="flex justify-between items-center mb-6">
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Description
+        </label>
 
-          <h2 className="text-2xl font-bold">
-            {isEditing
-  ? "Edit Research Group"
-  : "Create Research Group"}
-          </h2>
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+          rows={4}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
 
-          <button onClick={onClose}>
-            ✕
-          </button>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Department
+        </label>
 
-        </div>
+        <select
+          name="department_id"
+          value={formData.department_id}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        >
+          <option value="">
+            Select Department
+          </option>
 
-        <div className="space-y-4">
-
-          <input
-            type="text"
-            name="name"
-            placeholder="Research Group Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <select
-            name="department_id"
-            value={formData.department_id}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option value="">
-              Select Department
+          {departments.map((department) => (
+            <option
+              key={department.id}
+              value={department.id}
+            >
+              {department.name}
             </option>
+          ))}
+        </select>
+      </div>
 
-            {departments.map((department) => (
-              <option
-                key={department.id}
-                value={department.id}
-              >
-                {department.name}
-              </option>
-            ))}
+      <div className="flex justify-end gap-3 pt-2">
 
-          </select>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-
-          <button
-            onClick={onClose}
-            className="border px-5 py-2 rounded-lg"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg"
-          >
-            {isEditing
-  ? "Update Research Group"
-  : "Create Research Group"}
-          </button>
-
-        </div>
+        <Button onClick={handleSubmit}>
+          {isEditing
+            ? "Update Research Group"
+            : "Create Research Group"}
+        </Button>
 
       </div>
 
     </div>
-  );
+  </Modal>
+);
 }
 
 export default CreateResearchGroupModal;

@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import {
   createMilestone,
   updateMilestone,
 } from "../../services/milestoneService";
+
 import { showError, showSuccess } from "../../utils/toast";
 
 function CreateMilestoneModal({
@@ -43,7 +49,7 @@ function CreateMilestoneModal({
   }
 }, [isOpen, isEditing, milestone]);
 
-  if (!isOpen) return null;
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -106,96 +112,94 @@ function CreateMilestoneModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={isEditing ? "Edit Milestone" : "Create Milestone"}
+    size="max-w-xl"
+  >
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4"
+    >
+      <Input
+        label="Title"
+        type="text"
+        name="title"
+        placeholder="Title"
+        required
+        value={formData.title}
+        onChange={handleChange}
+      />
 
-        <h2 className="text-2xl font-bold mb-6">
-          {isEditing ? "Edit Milestone" : "Create Milestone"}
-        </h2>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Description
+        </label>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
+        <textarea
+          name="description"
+          placeholder="Description"
+          rows={3}
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
+
+      <Input
+        label="Due Date"
+        type="date"
+        name="due_date"
+        value={formData.due_date}
+        onChange={handleChange}
+      />
+
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Status
+        </label>
+
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
         >
-          <input
-            type="text"
-            name="title"
-            placeholder="Title"
-            required
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            rows="3"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <Input
+        label="Completion Percentage"
+        type="number"
+        name="completion_percentage"
+        min="0"
+        max="100"
+        value={formData.completion_percentage}
+        onChange={handleChange}
+      />
 
-          <input
-            type="date"
-            name="due_date"
-            value={formData.due_date}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <div className="flex justify-end gap-3 pt-2">
 
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option value="Pending">Pending</option>
-            <option value="In Progress">
-              In Progress
-            </option>
-            <option value="Completed">
-              Completed
-            </option>
-          </select>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-          <div>
-            <label className="block mb-2 font-medium">
-              Completion Percentage
-            </label>
-
-            <input
-              type="number"
-              name="completion_percentage"
-              min="0"
-              max="100"
-              value={formData.completion_percentage}
-              onChange={handleChange}
-              className="w-full border rounded-lg p-3"
-            />
-          </div>
-
-          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2 rounded-lg border"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-            >
-              {isEditing ? "Update" : "Create"}
-            </button>
-          </div>
-        </form>
+        <Button type="submit">
+          {isEditing ? "Update" : "Create"}
+        </Button>
 
       </div>
-    </div>
-  );
+    </form>
+  </Modal>
+);
 }
 
 export default CreateMilestoneModal;

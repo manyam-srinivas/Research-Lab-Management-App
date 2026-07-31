@@ -1,4 +1,8 @@
 import { useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+
 import { uploadDocument } from "../../services/documentService";
 import { showError, showSuccess } from "../../utils/toast";
 const CreateDocumentModal = ({
@@ -11,7 +15,7 @@ const CreateDocumentModal = ({
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  if (!isOpen) return null;
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,52 +49,48 @@ const CreateDocumentModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title="Upload Document"
+    size="max-w-md"
+  >
+    <form onSubmit={handleSubmit} className="space-y-5">
 
-        <h2 className="text-xl font-bold mb-4">
-          Upload Document
-        </h2>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Select File
+        </label>
 
-        <form onSubmit={handleSubmit}>
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          className="w-full rounded-xl border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+        />
+      </div>
 
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">
-              Select File
-            </label>
+      <div className="flex justify-end gap-3">
 
-            <input
-              type="file"
-              onChange={(e) => setFile(e.target.files[0])}
-              className="w-full border rounded-lg p-2"
-            />
-          </div>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-          <div className="flex flex-col sm:flex-row justify-end gap-3">
-
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-lg border"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              disabled={uploading}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-            >
-              {uploading ? "Uploading..." : "Upload"}
-            </button>
-
-          </div>
-
-        </form>
+        <Button
+          type="submit"
+          disabled={uploading}
+        >
+          {uploading ? "Uploading..." : "Upload"}
+        </Button>
 
       </div>
-    </div>
-  );
+
+    </form>
+  </Modal>
+);
 };
 
 export default CreateDocumentModal;

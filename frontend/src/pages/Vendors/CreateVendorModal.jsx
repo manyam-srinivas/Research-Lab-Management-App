@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import {
   createVendor,
   updateVendor,
 } from "../../services/vendorService";
+
 import { showError, showSuccess } from "../../utils/toast";
 function CreateVendorModal({
   isOpen,
@@ -43,7 +49,7 @@ function CreateVendorModal({
     });
   }
 }, [isOpen, isEditing, vendor]);
-  if (!isOpen) return null;
+  
 
   const handleChange = (e) => {
 
@@ -100,101 +106,93 @@ function CreateVendorModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={isEditing ? "Edit Vendor" : "Add Vendor"}
+    size="max-w-xl"
+  >
+    <div className="space-y-4">
 
-      <div className="bg-white w-full max-w-xl rounded-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <Input
+        label="Vendor Name"
+        name="vendor_name"
+        placeholder="Vendor Name"
+        value={formData.vendor_name}
+        onChange={handleChange}
+      />
 
-        <div className="flex justify-between items-center mb-6">
+      <Input
+        label="Contact Person"
+        name="contact_person"
+        placeholder="Contact Person"
+        value={formData.contact_person}
+        onChange={handleChange}
+      />
 
-          <h2 className="text-2xl font-bold">
-            {isEditing ? "Edit Vendor" : "Add Vendor"}
-          </h2>
+      <Input
+        label="Phone"
+        name="phone"
+        placeholder="Phone"
+        value={formData.phone}
+        onChange={handleChange}
+      />
 
-          <button onClick={onClose}>
-            ✕
-          </button>
+      <Input
+        label="Email"
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+      />
 
-        </div>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Address
+        </label>
 
-        <div className="space-y-4">
+        <textarea
+          name="address"
+          placeholder="Address"
+          value={formData.address}
+          onChange={handleChange}
+          rows={4}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
 
-          <input
-            name="vendor_name"
-            placeholder="Vendor Name"
-            value={formData.vendor_name}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <Input
+        label="Rating"
+        type="number"
+        step="0.1"
+        min="0"
+        max="5"
+        name="rating"
+        placeholder="Rating (0-5)"
+        value={formData.rating}
+        onChange={handleChange}
+      />
 
-          <input
-            name="contact_person"
-            placeholder="Contact Person"
-            value={formData.contact_person}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <div className="flex justify-end gap-3 pt-2">
 
-          <input
-            name="phone"
-            placeholder="Phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <textarea
-            name="address"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <input
-            type="number"
-            step="0.1"
-            min="0"
-            max="5"
-            name="rating"
-            placeholder="Rating (0-5)"
-            value={formData.rating}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-
-          <button
-            onClick={onClose}
-            className="border px-5 py-2 rounded-lg"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg"
-          >
-            {isEditing ? "Update Vendor" : "Create Vendor"}
-          </button>
-
-        </div>
+        <Button onClick={handleSubmit}>
+          {isEditing ? "Update Vendor" : "Create Vendor"}
+        </Button>
 
       </div>
 
     </div>
-  );
+  </Modal>
+);
 }
 
 export default CreateVendorModal;

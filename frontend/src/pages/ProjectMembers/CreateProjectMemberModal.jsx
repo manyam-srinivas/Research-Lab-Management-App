@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+
 import { showError, showSuccess } from "../../utils/toast";
+
 import {
   addProjectMember,
   updateProjectMember,
@@ -34,7 +39,7 @@ const CreateProjectMemberModal = ({
   }
 }, [isOpen, isEditing, member]);
 
-  if (!isOpen) return null;
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -93,87 +98,85 @@ const CreateProjectMemberModal = ({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={isEditing ? "Edit Project Member" : "Add Project Member"}
+    size="max-w-md"
+  >
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4"
+    >
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          User
+        </label>
 
-        <h2 className="text-xl font-bold mb-4">
-          {isEditing ? "Edit Project Member" : "Add Project Member"}
-        </h2>
+        <select
+          name="user_id"
+          value={formData.user_id}
+          onChange={handleChange}
+          required
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        >
+          <option value="">
+            Select User
+          </option>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-
-          <div>
-            <label className="block mb-1 font-medium">
-              User
-            </label>
-
-            <select
-              name="user_id"
-              value={formData.user_id}
-              onChange={handleChange}
-              className="w-full border rounded-lg p-2"
-              required
+          {users.map((user) => (
+            <option
+              key={user.id}
+              value={user.id}
             >
-              <option value="">
-                Select User
-              </option>
+              {user.full_name} ({user.role})
+            </option>
+          ))}
+        </select>
+      </div>
 
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.full_name} ({user.role})
-                </option>
-              ))}
-            </select>
-          </div>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Member Type
+        </label>
 
-          <div>
-            <label className="block mb-1 font-medium">
-              Member Type
-            </label>
+        <select
+          name="member_type"
+          value={formData.member_type}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        >
+          <option value="Student">Student</option>
+          <option value="Research Scholar">
+            Research Scholar
+          </option>
+          <option value="Faculty">
+            Faculty
+          </option>
+          <option value="Lab Staff">
+            Lab Staff
+          </option>
+        </select>
+      </div>
 
-            <select
-              name="member_type"
-              value={formData.member_type}
-              onChange={handleChange}
-              className="w-full border rounded-lg p-2"
-            >
-              <option value="Student">Student</option>
-              <option value="Research Scholar">
-                Research Scholar
-              </option>
-              <option value="Faculty">
-                Faculty
-              </option>
-              <option value="Lab Staff">
-                Lab Staff
-              </option>
-            </select>
-          </div>
+      <div className="flex justify-end gap-3 pt-2">
 
-          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-gray-300"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white"
-            >
-              {isEditing ? "Update Member" : "Add Member"}
-            </button>
-
-          </div>
-
-        </form>
+        <Button type="submit">
+          {isEditing ? "Update Member" : "Add Member"}
+        </Button>
 
       </div>
-    </div>
-  );
+    </form>
+  </Modal>
+);
 };
 
 export default CreateProjectMemberModal;

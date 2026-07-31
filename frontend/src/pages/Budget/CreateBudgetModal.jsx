@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import { showSuccess, showError } from "../../utils/toast";
 import {
   createBudget,
@@ -35,7 +40,7 @@ function CreateBudgetModal({
     });
   }
 }, [isOpen, isEditing, budget]);
-  if (!isOpen) return null;
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -93,90 +98,78 @@ function CreateBudgetModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={isEditing ? "Edit Budget" : "Create Budget"}
+    size="max-w-lg"
+  >
+    <div className="space-y-4">
 
-      <div className="bg-white w-full max-w-lg rounded-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Department
+        </label>
 
-        <div className="flex justify-between items-center mb-6">
+        <select
+          name="department_id"
+          value={formData.department_id}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+        >
+          <option value="">
+            Select Department
+          </option>
 
-          <h2 className="text-2xl font-bold">
-            {isEditing
-  ? "Edit Budget"
-  : "Create Budget"}
-          </h2>
-
-          <button onClick={onClose}>
-            ✕
-          </button>
-
-        </div>
-
-        <div className="space-y-4">
-
-          <select
-            name="department_id"
-            value={formData.department_id}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option value="">
-              Select Department
+          {departments.map((department) => (
+            <option
+              key={department.id}
+              value={department.id}
+            >
+              {department.name}
             </option>
+          ))}
+        </select>
+      </div>
 
-            {departments.map((department) => (
-              <option
-                key={department.id}
-                value={department.id}
-              >
-                {department.name}
-              </option>
-            ))}
-          </select>
+      <Input
+        label="Financial Year"
+        name="financial_year"
+        placeholder="2026-2027"
+        value={formData.financial_year}
+        onChange={handleChange}
+      />
 
-          <input
-            name="financial_year"
-            placeholder="Financial Year (e.g. 2026-2027)"
-            value={formData.financial_year}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <Input
+        label="Allocated Amount"
+        type="number"
+        step="0.01"
+        name="allocated_amount"
+        placeholder="Allocated Amount"
+        value={formData.allocated_amount}
+        onChange={handleChange}
+      />
 
-          <input
-            type="number"
-            step="0.01"
-            name="allocated_amount"
-            placeholder="Allocated Amount"
-            value={formData.allocated_amount}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <div className="flex justify-end gap-3 pt-2">
 
-        </div>
+        <Button
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-
-          <button
-            onClick={onClose}
-            className="border px-5 py-2 rounded-lg"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg"
-          >
-            {isEditing
-  ? "Update Budget"
-  : "Create Budget"}
-          </button>
-
-        </div>
+        <Button onClick={handleSubmit}>
+          {isEditing
+            ? "Update Budget"
+            : "Create Budget"}
+        </Button>
 
       </div>
 
     </div>
-  );
+  </Modal>
+);
 }
 
 export default CreateBudgetModal;

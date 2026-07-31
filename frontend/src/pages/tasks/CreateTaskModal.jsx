@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import { showError, showSuccess } from "../../utils/toast";
+
 import {
   createTask,
   updateTask,
@@ -48,7 +54,7 @@ function CreateTaskModal({
   }
 }, [isOpen, isEditing, task]);
 
-  if (!isOpen) return null;
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -112,112 +118,129 @@ function CreateTaskModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={isEditing ? "Edit Task" : "Create Task"}
+    size="max-w-xl"
+  >
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4"
+    >
+      <Input
+        label="Task Title"
+        type="text"
+        name="title"
+        placeholder="Task Title"
+        required
+        value={formData.title}
+        onChange={handleChange}
+      />
 
-        <h2 className="text-2xl font-bold mb-6">
-          {isEditing ? "Edit Task" : "Create Task"}
-        </h2>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Description
+        </label>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
+        <textarea
+          name="description"
+          placeholder="Description"
+          rows={3}
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Assign User
+        </label>
+
+        <select
+          name="assigned_to"
+          value={formData.assigned_to}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
         >
-          <input
-            type="text"
-            name="title"
-            placeholder="Task Title"
-            required
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+          <option value="">
+            Assign User (Optional)
+          </option>
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            rows="3"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <select
-            name="assigned_to"
-            value={formData.assigned_to}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option value="">
-              Assign User (Optional)
+          {users.map((user) => (
+            <option
+              key={user.id}
+              value={user.id}
+            >
+              {user.full_name}
             </option>
+          ))}
+        </select>
+      </div>
 
-            {users.map((user) => (
-              <option
-                key={user.id}
-                value={user.id}
-              >
-                {user.full_name}
-              </option>
-            ))}
-          </select>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Priority
+        </label>
 
-          <select
-            name="priority"
-            value={formData.priority}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-            <option>Critical</option>
-          </select>
+        <select
+          name="priority"
+          value={formData.priority}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        >
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+          <option>Critical</option>
+        </select>
+      </div>
 
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option>Pending</option>
-            <option>In Progress</option>
-            <option>Completed</option>
-            <option>Blocked</option>
-          </select>
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Status
+        </label>
 
-          <input
-            type="date"
-            name="due_date"
-            value={formData.due_date}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        >
+          <option>Pending</option>
+          <option>In Progress</option>
+          <option>Completed</option>
+          <option>Blocked</option>
+        </select>
+      </div>
 
-          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+      <Input
+        label="Due Date"
+        type="date"
+        name="due_date"
+        value={formData.due_date}
+        onChange={handleChange}
+      />
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2 border rounded-lg"
-            >
-              Cancel
-            </button>
+      <div className="flex justify-end gap-3 pt-2">
 
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-            >
-              {isEditing ? "Update Task" : "Create Task"}
-            </button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-          </div>
-
-        </form>
+        <Button type="submit">
+          {isEditing ? "Update Task" : "Create Task"}
+        </Button>
 
       </div>
-    </div>
-  );
+    </form>
+  </Modal>
+);
 }
 
 export default CreateTaskModal;

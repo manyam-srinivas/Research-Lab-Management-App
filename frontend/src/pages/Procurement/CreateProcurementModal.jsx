@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
+
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+
 import {
   createProcurementRequest,
   updateProcurementRequest,
 } from "../../services/procurementService";
+
 import { showError, showSuccess } from "../../utils/toast";
 
 function CreateProcurementModal({
@@ -42,7 +48,7 @@ function CreateProcurementModal({
   }
 }, [isOpen, isEditing, request]);
 
-  if (!isOpen) return null;
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -109,108 +115,106 @@ function CreateProcurementModal({
 };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title={
+      isEditing
+        ? "Edit Procurement Request"
+        : "New Procurement Request"
+    }
+    size="max-w-xl"
+  >
+    <div className="space-y-4">
 
-      <div className="bg-white w-full max-w-xl rounded-xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+      <Input
+        label="Item Name"
+        name="item_name"
+        placeholder="Item Name"
+        value={formData.item_name}
+        onChange={handleChange}
+      />
 
-        <div className="flex justify-between items-center mb-6">
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Vendor
+        </label>
 
-          <h2 className="text-2xl font-bold">
-            {isEditing
-  ? "Edit Procurement Request"
-  : "New Procurement Request"}
-          </h2>
+        <select
+          name="vendor_id"
+          value={formData.vendor_id}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        >
+          <option value="">
+            Select Vendor (Optional)
+          </option>
 
-          <button onClick={onClose}>
-            ✕
-          </button>
-
-        </div>
-
-        <div className="space-y-4">
-
-          <input
-            name="item_name"
-            placeholder="Item Name"
-            value={formData.item_name}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
-
-          <select
-            name="vendor_id"
-            value={formData.vendor_id}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option value="">
-              Select Vendor (Optional)
+          {vendors.map((vendor) => (
+            <option
+              key={vendor.id}
+              value={vendor.id}
+            >
+              {vendor.vendor_name}
             </option>
+          ))}
+        </select>
+      </div>
 
-            {vendors.map((vendor) => (
-              <option
-                key={vendor.id}
-                value={vendor.id}
-              >
-                {vendor.vendor_name}
-              </option>
-            ))}
-          </select>
+      <Input
+        label="Quantity"
+        type="number"
+        name="quantity"
+        placeholder="Quantity"
+        value={formData.quantity}
+        onChange={handleChange}
+      />
 
-          <input
-            type="number"
-            name="quantity"
-            placeholder="Quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <Input
+        label="Estimated Cost"
+        type="number"
+        step="0.01"
+        name="estimated_cost"
+        placeholder="Estimated Cost"
+        value={formData.estimated_cost}
+        onChange={handleChange}
+      />
 
-          <input
-            type="number"
-            step="0.01"
-            name="estimated_cost"
-            placeholder="Estimated Cost"
-            value={formData.estimated_cost}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          />
+      <div>
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Justification
+        </label>
 
-          <textarea
-            name="justification"
-            placeholder="Justification"
-            value={formData.justification}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-            rows="4"
-          />
+        <textarea
+          name="justification"
+          placeholder="Justification"
+          value={formData.justification}
+          onChange={handleChange}
+          rows={4}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+        />
+      </div>
 
-        </div>
+      <div className="flex justify-end gap-3 pt-2">
 
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+        <Button
+          variant="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
 
-          <button
-            onClick={onClose}
-            className="border px-5 py-2 rounded-lg"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg"
-          >
-            {isEditing
-  ? "Update Request"
-  : "Create Request"}
-          </button>
-
-        </div>
+        <Button onClick={handleSubmit}>
+          {isEditing
+            ? "Update Request"
+            : "Create Request"}
+        </Button>
 
       </div>
 
     </div>
-  );
+  </Modal>
+);
 }
 
 export default CreateProcurementModal;
