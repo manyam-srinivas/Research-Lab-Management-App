@@ -41,6 +41,10 @@ def dashboard():
         float(b.remaining_amount)
         for b in budgets
     )
+    from app.extensions import db
+    print(db.engine.url)
+
+
 
     return {
         "status": "success",

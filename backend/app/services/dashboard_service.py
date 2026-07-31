@@ -1,27 +1,21 @@
 from app.models.project import Project
-from app.models.research_group import ResearchGroup
-from app.models.document import Document
-from app.models.task import Task
-from app.models.equipment import Equipment
-from app.models.procurement_request import ProcurementRequest
-from app.models.notification import Notification
-from app.models.budget import Budget
-from app.models.expense import Expense
 
 class DashboardService:
 
     @staticmethod
     def get_summary():
 
+        print("TOTAL:", Project.query.count())
+        print("ACTIVE:", Project.query.filter_by(is_deleted=False).count())
+
         return {
-
             "total_projects":
-                Project.query.count(),
+    Project.query.count(),
 
-            "active_projects":
-                Project.query.filter_by(
-                    status="Active"
-                ).count(),
+"active_projects":
+    Project.query.filter_by(
+        status="Active"
+    ).count(),
 
             "total_research_groups":
                 ResearchGroup.query.count(),

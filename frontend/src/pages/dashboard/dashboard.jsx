@@ -28,37 +28,67 @@ function Dashboard() {
   }, []);
 
   return (
-    <>
-      <WelcomeBanner />
+  <div className="space-y-8">
 
-      <div className="mt-8">
-        <DashboardStats
-  summary={dashboardData?.summary}
-  finance={dashboardData?.finance}
-  equipment={dashboardData?.equipment}
-  tasks={dashboardData?.tasks}
-/>
+    <WelcomeBanner />
+
+    {!dashboardData ? (
+
+      <div className="flex justify-center items-center py-32">
+
+        <div className="text-center">
+
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+
+          <p className="mt-4 text-gray-500">
+            Loading Dashboard...
+          </p>
+
+        </div>
+
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-  <ProjectStatusChart
-    summary={dashboardData?.summary}
-  />
 
-  <BudgetPieChart
-    finance={dashboardData?.finance}
-  />
-</div>
-<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-  <TaskStatusChart
-    tasks={dashboardData?.tasks}
-  />
+    ) : (
 
-  <EquipmentStatusChart
-    equipment={dashboardData?.equipment}
-  />
-</div>
-    </>
-  );
+      <>
+
+        <DashboardStats
+          summary={dashboardData.summary}
+          finance={dashboardData.finance}
+          equipment={dashboardData.equipment}
+          tasks={dashboardData.tasks}
+        />
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+          <ProjectStatusChart
+            summary={dashboardData.summary}
+          />
+
+          <BudgetPieChart
+            finance={dashboardData.finance}
+          />
+
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+          <TaskStatusChart
+            tasks={dashboardData.tasks}
+          />
+
+          <EquipmentStatusChart
+            equipment={dashboardData.equipment}
+          />
+
+        </div>
+
+      </>
+
+    )}
+
+  </div>
+);
 }
 
 export default Dashboard;
