@@ -1,10 +1,8 @@
-import axios from "axios";
-
-const API = "http://127.0.0.1:5000/api/project_members";
+import api from "./api";
 
 export const getProjectMembers = async (token, projectId) => {
-  const response = await axios.get(
-    `${API}/project/${projectId}`,
+  const response = await api.get(
+    `/project_members/project/${projectId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -16,8 +14,8 @@ export const getProjectMembers = async (token, projectId) => {
 };
 
 export const addProjectMember = async (token, data) => {
-  const response = await axios.post(
-    `${API}/`,
+  const response = await api.post(
+    `/project_members/`,
     data,
     {
       headers: {
@@ -34,8 +32,8 @@ export const updateProjectMember = async (
   memberId,
   data
 ) => {
-  const response = await axios.put(
-    `${API}/${memberId}`,
+  const response = await api.put(
+    `/project_members/${memberId}`,
     data,
     {
       headers: {
@@ -51,8 +49,8 @@ export const deleteProjectMember = async (
   token,
   memberId
 ) => {
-  const response = await axios.delete(
-    `${API}/${memberId}`,
+  const response = await api.delete(
+    `/project_members/${memberId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

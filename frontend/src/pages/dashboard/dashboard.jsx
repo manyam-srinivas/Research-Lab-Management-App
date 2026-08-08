@@ -3,13 +3,17 @@ import ProjectStatusChart from "../../components/dashboard/ProjectStatusChart";
 import WelcomeBanner from "../../components/dashboard/WelcomeBanner";
 import DashboardStats from "../../components/dashboard/DashboardStats";
 import BudgetPieChart from "../../components/dashboard/BudgetPieChart";
-import { getDashboardData } from "../../services/dashboardService";
+import { getDashboardData, getRecentActivity } from "../../services/dashboardService";
 import TaskStatusChart from "../../components/dashboard/TaskStatusChart";
 import EquipmentStatusChart from "../../components/dashboard/EquipmentStatusChart";
+import RecentActivity from "../../components/dashboard/RecentActivity";
+import { isAdmin } from "../../utils/permissions";
 
 
 function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
+  const [recentItems, setRecentItems] = useState([]);
+  const [recentLoading, setRecentLoading] = useState(true);
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -24,7 +28,25 @@ function Dashboard() {
       }
     };
 
+    const fetchRecent = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await getRecentActivity(token);
+        setRecentItems(response.items || []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setRecentLoading(false);
+      }
+    };
+
     fetchSummary();
+
+    // Recent activity is an admin-only feed; the component is only
+    // rendered for admins, so no loading state reset is needed here.
+    if (isAdmin()) {
+      fetchRecent();
+    }
   }, []);
 
   return (
@@ -82,6 +104,13 @@ function Dashboard() {
           />
 
         </div>
+
+        {isAdmin() && (
+          <RecentActivity
+            items={recentItems}
+            loading={recentLoading}
+          />
+        )}
 
       </>
 

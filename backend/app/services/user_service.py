@@ -7,10 +7,25 @@ from app.models.user import User
 class UserService:
 
     @staticmethod
-    def get_all_users():
-        return User.query.filter_by(
+    def get_all_users(search=None, status=None, role=None):
+        query = User.query.filter_by(
             is_deleted=False
-        ).all()
+        )
+
+        if status:
+            query = query.filter_by(status=status)
+
+        if role:
+            query = query.filter_by(role=role)
+
+        if search:
+            like = f"%{search}%"
+            query = query.filter(
+                User.full_name.ilike(like) |
+                User.email.ilike(like)
+            )
+
+        return query.all()
 
     @staticmethod
     def get_user(user_id):

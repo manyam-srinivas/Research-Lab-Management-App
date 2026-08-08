@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const API = "http://127.0.0.1:5000/api/documents";
+import api from "./api";
 
 export const uploadDocument = async (token, formData) => {
-  const response = await axios.post(`${API}/upload`, formData, {
+  const response = await api.post(`/documents/upload`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
@@ -14,7 +12,7 @@ export const uploadDocument = async (token, formData) => {
 };
 
 export const getProjectDocuments = async (token, projectId) => {
-  const response = await axios.get(`${API}/project/${projectId}`, {
+  const response = await api.get(`/documents/project/${projectId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -24,8 +22,8 @@ export const getProjectDocuments = async (token, projectId) => {
 };
 
 export const downloadDocument = async (token, documentId) => {
-  const response = await axios.get(
-    `${API}/${documentId}/download`,
+  const response = await api.get(
+    `/documents/${documentId}/download`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -38,8 +36,8 @@ export const downloadDocument = async (token, documentId) => {
 };
 
 export const deleteDocument = async (token, documentId) => {
-  const response = await axios.delete(
-    `${API}/${documentId}`,
+  const response = await api.delete(
+    `/documents/${documentId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

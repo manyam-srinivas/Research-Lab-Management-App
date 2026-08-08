@@ -1,7 +1,17 @@
 import api from "./api";
 
-export async function getProjects(token) {
-  const response = await api.get("/projects/", {
+export async function getProjects(token, queryString = "") {
+  const response = await api.get(`/projects/${queryString}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
+export async function getMyProjects(token) {
+  const response = await api.get(`/projects/my`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -41,6 +51,19 @@ export async function updateProject(token, id, projectData) {
 export async function deleteProject(token, id) {
   const response = await api.delete(
     `/projects/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+export async function getProjectFinance(token, id) {
+  const response = await api.get(
+    `/projects/${id}/finance`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

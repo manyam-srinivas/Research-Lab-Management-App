@@ -9,7 +9,13 @@ class Budget(db.Model):
     department_id = db.Column(
         db.Integer,
         db.ForeignKey("departments.id"),
-        nullable=False
+        nullable=True
+    )
+
+    project_id = db.Column(
+        db.Integer,
+        db.ForeignKey("projects.id"),
+        nullable=True
     )
 
     financial_year = db.Column(db.String(20))

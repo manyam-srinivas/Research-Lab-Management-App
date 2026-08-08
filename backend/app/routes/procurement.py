@@ -5,6 +5,7 @@ from app.models.user import User
 from app.models.vendor import Vendor
 from app.services.procurement_service import ProcurementService
 from app.services.activity_log_service import ActivityLogService
+from app.services.notification_service import NotificationService
 
 procurement_bp = Blueprint(
     "procurement",
@@ -16,6 +17,7 @@ def request_to_dict(req):
     return {
         "id": req.id,
         "requested_by": req.requested_by,
+        "project_id": req.project_id,
         "vendor_id": req.vendor_id,
         "item_name": req.item_name,
         "quantity": req.quantity,
@@ -144,7 +146,12 @@ def create_request():
 @jwt_required()
 def get_requests():
 
-    requests = ProcurementService.get_all_requests()
+    requests = ProcurementService.get_all_requests(
+        project_id=request.args.get("project_id",
+            type=int),
+        search=request.args.get("search"),
+        status=request.args.get("status")
+    )
 
     return {
         "status": "success",
@@ -227,6 +234,17 @@ def update_status(request_id):
     entity_id=procurement.id,
     ip_address=request.remote_addr
 )
+
+    # Notify the requester about the procurement decision.
+    NotificationService.notify(
+        user_id=procurement.requested_by,
+        title="Procurement Request Updated",
+        message=(
+            f"Your procurement request for '{procurement.item_name}' "
+            f"was {status.lower()} by {user.full_name}."
+        ),
+        type="Procurement"
+    )
 
     return {
         "status": "success",

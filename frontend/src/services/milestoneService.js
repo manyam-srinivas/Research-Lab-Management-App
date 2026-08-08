@@ -1,13 +1,11 @@
-import axios from "axios";
-
-const API = "http://127.0.0.1:5000/api/milestones";
+import api from "./api";
 
 export const getProjectMilestones = async (
   token,
   projectId
 ) => {
-  const response = await axios.get(
-    `${API}/project/${projectId}`,
+  const response = await api.get(
+    `/milestones/project/${projectId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -22,8 +20,8 @@ export const createMilestone = async (
   token,
   data
 ) => {
-  const response = await axios.post(
-    `${API}/`,
+  const response = await api.post(
+    `/milestones/`,
     data,
     {
       headers: {
@@ -40,8 +38,8 @@ export const updateMilestone = async (
   milestoneId,
   data
 ) => {
-  const response = await axios.put(
-    `${API}/${milestoneId}`,
+  const response = await api.put(
+    `/milestones/${milestoneId}`,
     data,
     {
       headers: {
@@ -57,8 +55,8 @@ export const deleteMilestone = async (
   token,
   milestoneId
 ) => {
-  const response = await axios.delete(
-    `${API}/${milestoneId}`,
+  const response = await api.delete(
+    `/milestones/${milestoneId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -73,8 +71,8 @@ export const getMilestone = async (
   token,
   milestoneId
 ) => {
-  const response = await axios.get(
-    `${API}/${milestoneId}`,
+  const response = await api.get(
+    `/milestones/${milestoneId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

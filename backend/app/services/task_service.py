@@ -28,6 +28,12 @@ class TaskService:
         ).all()
 
     @staticmethod
+    def get_tasks_for_user(user_id):
+        return Task.query.filter_by(
+            assigned_to=user_id
+        ).order_by(Task.created_at.desc()).all()
+
+    @staticmethod
     def get_task(task_id):
         return Task.query.get(task_id)
 

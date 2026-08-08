@@ -22,8 +22,22 @@ class EquipmentService:
         return equipment
 
     @staticmethod
-    def get_all_equipment():
-        return Equipment.query.all()
+    def get_all_equipment(search=None, status=None):
+        query = Equipment.query
+
+        if status:
+            query = query.filter_by(status=status)
+
+        if search:
+            like = f"%{search}%"
+            query = query.filter(
+                Equipment.name.ilike(like) |
+                Equipment.category.ilike(like) |
+                Equipment.serial_number.ilike(like) |
+                Equipment.location.ilike(like)
+            )
+
+        return query.all()
 
     @staticmethod
     def get_equipment(equipment_id):

@@ -25,6 +25,38 @@ def notification_to_dict(notification):
     }
 
 
+@notification_bp.route("/unread-count", methods=["GET"])
+@jwt_required()
+def unread_count():
+
+    current_user_id = int(get_jwt_identity())
+
+    count = NotificationService.get_unread_count(
+        current_user_id
+    )
+
+    return {
+        "status": "success",
+        "count": count
+    }, 200
+
+
+@notification_bp.route("/read-all", methods=["PUT"])
+@jwt_required()
+def mark_all_read():
+
+    current_user_id = int(get_jwt_identity())
+
+    NotificationService.mark_all_read(
+        current_user_id
+    )
+
+    return {
+        "status": "success",
+        "message": "All notifications marked as read"
+    }, 200
+
+
 @notification_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_notification():

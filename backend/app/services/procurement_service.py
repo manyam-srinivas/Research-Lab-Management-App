@@ -9,6 +9,7 @@ class ProcurementService:
 
         request = ProcurementRequest(
             requested_by=current_user_id,
+            project_id=data.get("project_id"),
             vendor_id=data.get("vendor_id"),
             item_name=data.get("item_name"),
             quantity=data.get("quantity"),
@@ -23,8 +24,23 @@ class ProcurementService:
         return request
 
     @staticmethod
-    def get_all_requests():
-        return ProcurementRequest.query.all()
+    def get_all_requests(project_id=None, search=None, status=None):
+        query = ProcurementRequest.query
+
+        if project_id:
+            query = query.filter_by(project_id=project_id)
+
+        if status:
+            query = query.filter_by(status=status)
+
+        if search:
+            like = f"%{search}%"
+            query = query.filter(
+                ProcurementRequest.item_name.ilike(like) |
+                ProcurementRequest.justification.ilike(like)
+            )
+
+        return query.all()
 
     @staticmethod
     def get_request(request_id):

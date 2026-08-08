@@ -1,7 +1,11 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://research-lab-backend-x84w.onrender.com/api",
+  // Override with VITE_API_URL in .env to point at a local backend,
+  // e.g. VITE_API_URL=http://localhost:5000/api
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    "https://research-lab-backend-x84w.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },

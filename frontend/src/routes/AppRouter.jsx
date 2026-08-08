@@ -19,7 +19,9 @@ import EquipmentBookings from "../pages/equipmentBookings/EquipmentBookings";
 import Notifications from "../pages/notifications/Notifications";
 import ActivityLogs from "../pages/activityLogs/ActivityLogs";
 import Register from "../pages/Register/Register";
+import VerifyEmail from "../pages/Register/VerifyEmail";
 import Users from "../pages/Users/Users";
+import Profile from "../pages/Profile/Profile";
 import ProtectedRoute from "../routes/ProtectedRoute";
 
 function AppRouter() {
@@ -30,6 +32,7 @@ function AppRouter() {
         {/* Public Route */}
         <Route path="/" element={<Login />} />
 <Route path="/register" element={<Register />} />
+<Route path="/verify-email/:token" element={<VerifyEmail />} />
 
         {/* Protected Routes */}         
         <Route
@@ -186,9 +189,7 @@ function AppRouter() {
             <ActivityLogs />
            </ProtectedRoute>
                   }  
-          />
-
-       // Tasks
+          />          // Tasks
            <Route
             path="/Tasks"
             element={
@@ -197,6 +198,16 @@ function AppRouter() {
             </ProtectedRoute>
               }
            />
+
+          // Profile
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
         </Route>
 

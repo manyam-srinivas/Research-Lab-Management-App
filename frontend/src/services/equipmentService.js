@@ -1,10 +1,21 @@
 import api from "./api";
 
-export async function getEquipment(token) {
-  const response = await api.get("/equipment/", {
+export async function getEquipment(token, queryString = "") {
+  const response = await api.get(`/equipment/${queryString}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  });
+
+  return response.data;
+}
+
+export async function exportEquipmentCsv(token) {
+  const response = await api.get("/equipment/export", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    responseType: "blob",
   });
 
   return response.data;

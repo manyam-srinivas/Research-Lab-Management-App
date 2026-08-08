@@ -12,6 +12,12 @@ class Project(db.Model):
         nullable=True
     )
 
+    department_id = db.Column(
+        db.Integer,
+        db.ForeignKey("departments.id"),
+        nullable=True
+    )
+
     title = db.Column(db.String(255), nullable=False)
 
     description = db.Column(db.Text)

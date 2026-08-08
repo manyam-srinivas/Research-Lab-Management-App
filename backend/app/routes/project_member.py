@@ -74,20 +74,31 @@ def get_project_members(project_id):
 
     members = ProjectMemberService.get_project_members(project_id)
 
+    member_list = []
+
+    for member in members:
+        user = User.query.get(member.user_id)
+
+        member_list.append({
+            "id": member.id,
+            "project_id": member.project_id,
+            "user_id": member.user_id,
+            "member_type": member.member_type,
+            "joined_at": str(member.joined_at)
+            if member.joined_at else None,
+            "user": {
+                "id": member.user_id,
+                "full_name": user.full_name
+                if user else None,
+                "email": user.email if user else None,
+                "role": user.role if user else None
+            }
+        })
+
     return {
         "status": "success",
-        "count": len(members),
-        "members": [
-            {
-                "id": member.id,
-                "project_id": member.project_id,
-                "user_id": member.user_id,
-                "member_type": member.member_type,
-                "joined_at": str(member.joined_at)
-                if member.joined_at else None
-            }
-            for member in members
-        ]
+        "count": len(member_list),
+        "members": member_list
     }, 200
 
 

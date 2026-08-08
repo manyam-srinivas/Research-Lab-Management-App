@@ -92,6 +92,66 @@ def get_milestone_tasks(milestone_id):
     }, 200
 
 
+@task_bp.route("/my", methods=["GET"])
+@jwt_required()
+def get_my_tasks():
+    """Tasks assigned to the current user, optionally scoped to a single
+    project. Students use this to see the work assigned to them inside
+    the projects they belong to."""
+    from app.models.milestone import Milestone
+
+    current_user_id = int(get_jwt_identity())
+    project_id = request.args.get("project_id", type=int)
+
+    tasks = TaskService.get_tasks_for_user(
+        current_user_id
+    )
+
+    result = []
+
+    for task in tasks:
+        milestone = Milestone.query.get(task.milestone_id)
+
+        project = None
+        if milestone:
+            project = Project.query.filter_by(
+                id=milestone.project_id,
+                is_deleted=False
+            ).first()
+
+        if not project:
+            continue
+
+        if project_id and project.id != project_id:
+            continue
+
+        assignee = User.query.get(task.assigned_to)
+
+        result.append({
+            "id": task.id,
+            "milestone_id": task.milestone_id,
+            "milestone_title": milestone.title
+            if milestone else None,
+            "project_id": project.id,
+            "project_title": project.title,
+            "assigned_to": task.assigned_to,
+            "assigned_name": assignee.full_name
+            if assignee else None,
+            "title": task.title,
+            "description": task.description,
+            "priority": task.priority,
+            "status": task.status,
+            "due_date": str(task.due_date)
+            if task.due_date else None
+        })
+
+    return {
+        "status": "success",
+        "count": len(result),
+        "tasks": result
+    }, 200
+
+
 @task_bp.route("/<int:task_id>", methods=["GET"])
 @jwt_required()
 def get_task(task_id):

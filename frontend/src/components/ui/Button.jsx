@@ -2,7 +2,7 @@ const variants = {
   primary:
     "bg-blue-600 hover:bg-blue-700 text-white",
   secondary:
-    "bg-gray-200 hover:bg-gray-300 text-gray-900",
+    "bg-gray-200 hover:bg-gray-300 text-gray-900 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-100",
   success:
     "bg-green-600 hover:bg-green-700 text-white",
   danger:

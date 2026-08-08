@@ -4,12 +4,13 @@ import { FaBars, FaTimes } from "react-icons/fa";
 
 import Sidebar from "../components/layout/sidebar";
 import Navbar from "../components/layout/navbar";
+import CommandPalette from "../components/layout/CommandPalette";
 
 function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors">
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
@@ -46,16 +47,16 @@ function DashboardLayout() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Mobile Header */}
-        <div className="lg:hidden flex items-center justify-between bg-white shadow px-4 py-3">
+        <div className="lg:hidden flex items-center justify-between bg-white dark:bg-slate-900 shadow px-4 py-3">
 
           <button
             onClick={() => setSidebarOpen(true)}
-            className="text-2xl"
+            className="text-2xl text-slate-700 dark:text-slate-200"
           >
             <FaBars />
           </button>
 
-          <h1 className="font-bold text-lg">
+          <h1 className="font-bold text-lg text-slate-800 dark:text-slate-100">
             RLMS
           </h1>
 
@@ -67,11 +68,15 @@ function DashboardLayout() {
 
         {/* Content */}
         <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
-          <Outlet />
+          <div className="rlms-fade-in">
+            <Outlet />
+          </div>
         </main>
 
       </div>
 
+      {/* Global command palette (Ctrl+K) */}
+      <CommandPalette />
     </div>
   );
 }

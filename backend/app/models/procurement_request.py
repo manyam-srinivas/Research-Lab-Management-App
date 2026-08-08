@@ -12,6 +12,12 @@ class ProcurementRequest(db.Model):
         nullable=False
     )
 
+    project_id = db.Column(
+        db.Integer,
+        db.ForeignKey("projects.id"),
+        nullable=True
+    )
+
     vendor_id = db.Column(
         db.Integer,
         db.ForeignKey("vendors.id"),

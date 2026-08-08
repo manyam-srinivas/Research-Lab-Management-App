@@ -1,6 +1,10 @@
-from flask import Blueprint, request
+import csv
+import io
+
+from flask import Blueprint, request, Response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app.extensions import db
 from app.models.user import User
 from app.models.budget import Budget
 from app.services.expense_service import ExpenseService
@@ -17,6 +21,7 @@ def expense_to_dict(expense):
     return {
         "id": expense.id,
         "budget_id": expense.budget_id,
+        "project_id": expense.project_id,
         "procurement_request_id": expense.procurement_request_id,
         "amount": float(expense.amount),
         "expense_type": expense.expense_type,
@@ -24,6 +29,41 @@ def expense_to_dict(expense):
         "created_at": str(expense.created_at)
         if expense.created_at else None
     }
+
+
+@expense_bp.route("/export", methods=["GET"])
+@jwt_required()
+def export_expenses_csv():
+
+    expenses = ExpenseService.get_all_expenses(
+        project_id=request.args.get("project_id", type=int),
+        search=request.args.get("search")
+    )
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "ID", "Budget ID", "Project ID", "Amount", "Type",
+        "Description", "Created At"
+    ])
+
+    for e in expenses:
+        writer.writerow([
+            e.id, e.budget_id, e.project_id or "",
+            e.amount, e.expense_type or "",
+            e.description or "",
+            str(e.created_at) if e.created_at else ""
+        ])
+
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": (
+                "attachment; filename=expenses.csv"
+            )
+        }
+    )
 
 
 @expense_bp.route("/", methods=["POST"])
@@ -52,7 +92,15 @@ def create_expense():
             "message": "Budget not found."
         }, 404
 
-    expense = ExpenseService.create_expense(data)
+    try:
+        expense = ExpenseService.create_expense(data)
+    except ValueError as e:
+        db.session.rollback()
+        return {
+            "status": "error",
+            "message": str(e)
+        }, 400
+
     ActivityLogService.log_activity(
     user_id=current_user_id,
     action="Created",
@@ -71,7 +119,11 @@ def create_expense():
 @jwt_required()
 def get_expenses():
 
-    expenses = ExpenseService.get_all_expenses()
+    expenses = ExpenseService.get_all_expenses(
+        project_id=request.args.get("project_id",
+            type=int),
+        search=request.args.get("search")
+    )
 
     return {
         "status": "success",
@@ -137,10 +189,18 @@ def update_expense(expense_id):
             "message": "Budget not found."
         }, 404
 
-    ExpenseService.update_expense(
-        expense,
-        data
-    )
+    try:
+        ExpenseService.update_expense(
+            expense,
+            data
+        )
+    except ValueError as e:
+        db.session.rollback()
+        return {
+            "status": "error",
+            "message": str(e)
+        }, 400
+
     ActivityLogService.log_activity(
     user_id=current_user_id,
     action="Updated",

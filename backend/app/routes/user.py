@@ -4,6 +4,7 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from app.services.activity_log_service import ActivityLogService
+from app.services.notification_service import NotificationService
 from app.services.user_service import UserService
 from app.utils.auth import admin_required
 
@@ -23,7 +24,11 @@ user_bp = Blueprint("users", __name__)
 @admin_required
 def get_users():
 
-    users = UserService.get_all_users()
+    users = UserService.get_all_users(
+        search=request.args.get("search"),
+        status=request.args.get("status"),
+        role=request.args.get("role")
+    )
 
     return {
         "status": "success",
@@ -86,16 +91,16 @@ def approve_user(user_id):
     data = request.get_json()
 
     role = data.get("role")
-    if role not in VALID_ROLES:
-     return {
-        "status": "error",
-        "message": "Invalid role"
-    }, 400
-
     if not role:
         return {
             "status": "error",
             "message": "Role is required"
+        }, 400
+
+    if role not in VALID_ROLES:
+        return {
+            "status": "error",
+            "message": "Invalid role"
         }, 400
 
     user = UserService.approve_user(
@@ -110,6 +115,17 @@ def approve_user(user_id):
         entity_type="User",
         entity_id=user.id,
         ip_address=request.remote_addr
+    )
+
+    # Notify the approved user.
+    NotificationService.notify(
+        user_id=user.id,
+        title="Account Approved",
+        message=(
+            f"Your account has been approved with the role "
+            f"'{role}'. You can now sign in."
+        ),
+        type="Account"
     )
 
     return {
@@ -151,6 +167,17 @@ def reject_user(user_id):
         ip_address=request.remote_addr
     )
 
+    # Notify the rejected user.
+    NotificationService.notify(
+        user_id=user.id,
+        title="Registration Rejected",
+        message=(
+            "Your registration request was rejected. "
+            "Please contact the administrator."
+        ),
+        type="Account"
+    )
+
     return {
         "status": "success",
         "message": "User rejected successfully"
@@ -163,32 +190,31 @@ def change_role(user_id):
     current_user_id = int(get_jwt_identity())
     user = UserService.get_user(user_id)
 
-    if user.status != "Active":
-     return {
-        "status": "error",
-        "message": "Only active users can have their role changed"
-    }, 400
-    
-
     if not user:
         return {
             "status": "error",
             "message": "User not found"
         }, 404
 
+    if user.status != "Active":
+        return {
+            "status": "error",
+            "message": "Only active users can have their role changed"
+        }, 400
+
     data = request.get_json()
 
     role = data.get("role")
-    if role not in VALID_ROLES:
-     return {
-        "status": "error",
-        "message": "Invalid role"
-    }, 400
-
     if not role:
         return {
             "status": "error",
             "message": "Role is required"
+        }, 400
+
+    if role not in VALID_ROLES:
+        return {
+            "status": "error",
+            "message": "Invalid role"
         }, 400
 
     user = UserService.change_role(
@@ -215,14 +241,6 @@ def change_role(user_id):
 def activate_user(user_id):
 
     current_user_id = int(get_jwt_identity())
-    
-    user = UserService.get_user(user_id)
-
-    if user.status == "Rejected":
-     return {
-        "status": "error",
-        "message": "Rejected users cannot be activated"
-    }, 400
     user = UserService.get_user(user_id)
 
     if not user:
@@ -230,11 +248,18 @@ def activate_user(user_id):
             "status": "error",
             "message": "User not found"
         }, 404
+
+    if user.status == "Rejected":
+        return {
+            "status": "error",
+            "message": "Rejected users cannot be activated"
+        }, 400
+
     if user.status == "Active":
-     return {
-        "status": "error",
-        "message": "User is already active"
-    }, 400
+        return {
+            "status": "error",
+            "message": "User is already active"
+        }, 400
 
     user = UserService.activate_user(user)
 

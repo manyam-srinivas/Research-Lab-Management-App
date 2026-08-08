@@ -55,6 +55,16 @@ class User(db.Model):
         default=False
     )
 
+    email_verification_token = db.Column(
+        db.String(255),
+        nullable=True
+    )
+
+    email_verified_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
     is_deleted = db.Column(
         db.Boolean,
         default=False

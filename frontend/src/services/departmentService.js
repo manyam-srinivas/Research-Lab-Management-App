@@ -10,6 +10,16 @@ export async function getDepartments(token) {
   return response.data;
 }
 
+export async function getDepartmentsOverview(token) {
+  const response = await api.get("/departments/overview", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
 export async function createDepartment(token, departmentData) {
   const response = await api.post(
     "/departments/",

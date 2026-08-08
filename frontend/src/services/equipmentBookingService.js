@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const API = "http://127.0.0.1:5000/api/equipment-bookings";
+import api from "./api";
 
 export const getAllBookings = async (token) => {
-  const response = await axios.get(`${API}/`, {
+  const response = await api.get("/equipment-bookings/", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -13,7 +11,7 @@ export const getAllBookings = async (token) => {
 };
 
 export const getMyBookings = async (token) => {
-  const response = await axios.get(`${API}/my`, {
+  const response = await api.get("/equipment-bookings/my", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -23,8 +21,8 @@ export const getMyBookings = async (token) => {
 };
 
 export const createBooking = async (token, data) => {
-  const response = await axios.post(
-    `${API}/`,
+  const response = await api.post(
+    "/equipment-bookings/",
     data,
     {
       headers: {
@@ -41,8 +39,8 @@ export const updateBookingStatus = async (
   bookingId,
   status
 ) => {
-  const response = await axios.put(
-    `${API}/${bookingId}/status`,
+  const response = await api.put(
+    `/equipment-bookings/${bookingId}/status`,
     { status },
     {
       headers: {
@@ -58,8 +56,8 @@ export const deleteBooking = async (
   token,
   bookingId
 ) => {
-  const response = await axios.delete(
-    `${API}/${bookingId}`,
+  const response = await api.delete(
+    `/equipment-bookings/${bookingId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

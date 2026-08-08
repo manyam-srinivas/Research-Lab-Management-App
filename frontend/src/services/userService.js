@@ -1,7 +1,7 @@
 import api from "./api";
 
-export const getUsers = async () => {
-  const response = await api.get("/users/");
+export const getUsers = async (queryString = "") => {
+  const response = await api.get(`/users/${queryString}`);
   return response.data;
 };
 

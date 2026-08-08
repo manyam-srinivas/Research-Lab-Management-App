@@ -1,7 +1,7 @@
 import api from "./api";
 
-export async function getProcurementRequests(token) {
-  const response = await api.get("/procurement/", {
+export async function getProcurementRequests(token, queryString = "") {
+  const response = await api.get(`/procurement/${queryString}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

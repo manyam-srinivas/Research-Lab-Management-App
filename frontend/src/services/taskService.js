@@ -1,10 +1,8 @@
-import axios from "axios";
-
-const API = "http://127.0.0.1:5000/api/tasks";
+import api from "./api";
 
 export const getMilestoneTasks = async (token, milestoneId) => {
-  const response = await axios.get(
-    `${API}/milestone/${milestoneId}`,
+  const response = await api.get(
+    `/tasks/milestone/${milestoneId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -15,9 +13,20 @@ export const getMilestoneTasks = async (token, milestoneId) => {
   return response.data;
 };
 
+export const getMyTasks = async (token, projectId) => {
+  const qs = projectId ? `?project_id=${projectId}` : "";
+  const response = await api.get(`/tasks/my${qs}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
 export const getTask = async (token, taskId) => {
-  const response = await axios.get(
-    `${API}/${taskId}`,
+  const response = await api.get(
+    `/tasks/${taskId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -29,8 +38,8 @@ export const getTask = async (token, taskId) => {
 };
 
 export const createTask = async (token, data) => {
-  const response = await axios.post(
-    `${API}/`,
+  const response = await api.post(
+    `/tasks/`,
     data,
     {
       headers: {
@@ -47,8 +56,8 @@ export const updateTask = async (
   taskId,
   data
 ) => {
-  const response = await axios.put(
-    `${API}/${taskId}`,
+  const response = await api.put(
+    `/tasks/${taskId}`,
     data,
     {
       headers: {
@@ -64,8 +73,8 @@ export const deleteTask = async (
   token,
   taskId
 ) => {
-  const response = await axios.delete(
-    `${API}/${taskId}`,
+  const response = await api.delete(
+    `/tasks/${taskId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

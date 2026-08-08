@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -5,6 +7,7 @@ from app.models.user import User
 from app.models.equipment import Equipment
 from app.services.equipment_booking_service import EquipmentBookingService
 from app.services.activity_log_service import ActivityLogService
+from app.services.notification_service import NotificationService
 
 equipment_booking_bp = Blueprint(
     "equipment_bookings",
@@ -64,6 +67,49 @@ def create_booking():
             "status": "error",
             "message": "Equipment is not available for booking"
         }, 400
+
+    # --- Time conflict detection ---
+    # The frontend sends datetime-local strings like "2026-08-02T10:00".
+    # Normalize them so we can compare against existing bookings.
+    try:
+        start = datetime.fromisoformat(
+            data.get("start_time").replace("Z", "+00:00")
+        )
+        end = datetime.fromisoformat(
+            data.get("end_time").replace("Z", "+00:00")
+        )
+    except (TypeError, ValueError):
+        return {
+            "status": "error",
+            "message": "Invalid start_time or end_time format"
+        }, 400
+
+    # Stored bookings are naive datetimes; strip tzinfo to compare safely.
+    if start.tzinfo is not None:
+        start = start.replace(tzinfo=None)
+    if end.tzinfo is not None:
+        end = end.replace(tzinfo=None)
+
+    if end <= start:
+        return {
+            "status": "error",
+            "message": "End time must be after start time"
+        }, 400
+
+    conflict = EquipmentBookingService.find_conflict(
+        equipment_id=data.get("equipment_id"),
+        start=start,
+        end=end
+    )
+
+    if conflict:
+        return {
+            "status": "error",
+            "message": (
+                "This equipment is already booked for the requested "
+                "time slot."
+            )
+        }, 409
 
     booking = EquipmentBookingService.create_booking(
         data,
@@ -182,6 +228,17 @@ def update_booking_status(booking_id):
     entity_id=booking.id,
     ip_address=request.remote_addr
 )
+
+    # Notify the requester about the booking decision.
+    NotificationService.notify(
+        user_id=booking.requested_by,
+        title="Equipment Booking Updated",
+        message=(
+            f"Your booking request was {new_status.lower()} by "
+            f"{user.full_name}."
+        ),
+        type="Equipment Booking"
+    )
 
     return {
         "status": "success",

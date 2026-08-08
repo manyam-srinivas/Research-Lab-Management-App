@@ -12,6 +12,12 @@ class Expense(db.Model):
         nullable=False
     )
 
+    project_id = db.Column(
+        db.Integer,
+        db.ForeignKey("projects.id"),
+        nullable=True
+    )
+
     procurement_request_id = db.Column(
         db.Integer,
         db.ForeignKey("procurement_requests.id"),

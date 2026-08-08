@@ -1,11 +1,22 @@
 import api from "./api";
 
 // Get all expenses
-export const getExpenses = async (token) => {
-  const response = await api.get("/expenses/", {
+export const getExpenses = async (token, queryString = "") => {
+  const response = await api.get(`/expenses/${queryString}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  });
+
+  return response.data;
+};
+
+export const exportExpensesCsv = async (token) => {
+  const response = await api.get("/expenses/export", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    responseType: "blob",
   });
 
   return response.data;

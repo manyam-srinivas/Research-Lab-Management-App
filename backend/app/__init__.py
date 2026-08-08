@@ -37,6 +37,7 @@ from app.routes.activity_log import activity_log_bp
 from app.routes.dashboard import dashboard_bp
 from app.routes.department import department_bp
 from app.routes.user import user_bp
+from app.routes.search import search_bp
 
 # Import blueprints
 from app.routes.auth import auth_bp
@@ -129,6 +130,11 @@ def create_app():
     app.register_blueprint(
     user_bp,
     url_prefix="/api/users"
+    )
+
+    app.register_blueprint(
+    search_bp,
+    url_prefix="/api/search"
     )
     @app.route("/")
     def home():

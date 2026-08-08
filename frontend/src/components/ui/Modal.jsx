@@ -15,18 +15,18 @@ export default function Modal({
       onClick={onClose}
     >
       <div
-        className={`relative w-full ${size} bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden`}
+        className={`relative w-full ${size} bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b px-6 py-4">
-          <h2 className="text-xl font-semibold text-slate-800">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4">
+          <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
             {title}
           </h2>
 
           <button
             onClick={onClose}
-            className="rounded-lg p-2 hover:bg-slate-100 transition"
+            className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-500 dark:text-slate-400"
           >
             <X size={20} />
           </button>

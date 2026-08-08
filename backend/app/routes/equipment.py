@@ -1,4 +1,7 @@
-from flask import Blueprint, request
+import csv
+import io
+
+from flask import Blueprint, request, Response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.models.user import User
@@ -6,6 +9,41 @@ from app.services.equipment_service import EquipmentService
 from app.services.activity_log_service import ActivityLogService
 
 equipment_bp = Blueprint("equipment", __name__)
+
+
+@equipment_bp.route("/export", methods=["GET"])
+@jwt_required()
+def export_equipment_csv():
+
+    equipment_list = EquipmentService.get_all_equipment(
+        search=request.args.get("search"),
+        status=request.args.get("status")
+    )
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "ID", "Name", "Category", "Serial Number",
+        "Location", "Status", "Purchase Date"
+    ])
+
+    for e in equipment_list:
+        writer.writerow([
+            e.id, e.name, e.category or "",
+            e.serial_number or "", e.location or "",
+            e.status,
+            str(e.purchase_date) if e.purchase_date else ""
+        ])
+
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": (
+                "attachment; filename=equipment.csv"
+            )
+        }
+    )
 
 
 @equipment_bp.route("/", methods=["POST"])
@@ -49,7 +87,10 @@ def create_equipment():
 @jwt_required()
 def get_all_equipment():
 
-    equipment_list = EquipmentService.get_all_equipment()
+    equipment_list = EquipmentService.get_all_equipment(
+        search=request.args.get("search"),
+        status=request.args.get("status")
+    )
 
     return {
         "status": "success",

@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const API = "http://127.0.0.1:5000/api/notifications";
+import api from "./api";
 
 export const getNotifications = async (token) => {
-  const response = await axios.get(`${API}/`, {
+  const response = await api.get("/notifications/", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -13,8 +11,8 @@ export const getNotifications = async (token) => {
 };
 
 export const createNotification = async (token, data) => {
-  const response = await axios.post(
-    `${API}/`,
+  const response = await api.post(
+    "/notifications/",
     data,
     {
       headers: {
@@ -30,8 +28,32 @@ export const markAsRead = async (
   token,
   notificationId
 ) => {
-  const response = await axios.put(
-    `${API}/${notificationId}/read`,
+  const response = await api.put(
+    `/notifications/${notificationId}/read`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const getUnreadCount = async (token) => {
+  const response = await api.get("/notifications/unread-count", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export const markAllRead = async (token) => {
+  const response = await api.put(
+    "/notifications/read-all",
     {},
     {
       headers: {
@@ -47,8 +69,8 @@ export const deleteNotification = async (
   token,
   notificationId
 ) => {
-  const response = await axios.delete(
-    `${API}/${notificationId}`,
+  const response = await api.delete(
+    `/notifications/${notificationId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
