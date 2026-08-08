@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { FaDownload } from "react-icons/fa";
 
+import {
+  subscribeInstallPrompt,
+  consumeInstallPrompt,
+} from "../../utils/installPrompt";
+
 /**
  * A button that prompts the user to install the app as a PWA.
  *
  * Chrome/Edge fire a `beforeinstallprompt` event when the app meets the
- * installability criteria. We capture it and re-trigger it on click, which
- * is more reliable (and more demo-friendly) than relying on the tiny
- * install icon in the address bar.
+ * installability criteria. The event is captured app-wide (see
+ * utils/installPrompt.js) so it isn't lost while the user is on pages
+ * where this button isn't mounted (e.g. the login page). We re-trigger
+ * the captured prompt on click, which is more reliable than relying on
+ * the tiny install icon in the address bar.
  */
 function InstallAppButton() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -18,25 +25,18 @@ function InstallAppButton() {
     /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (event) => {
-      // Prevent Chrome's automatic mini-infobar so we control the prompt.
-      event.preventDefault();
-      setDeferredPrompt(event);
-    };
+    // Subscribe to the app-wide prompt state; receives the currently
+    // captured prompt immediately, then again whenever it changes.
+    const unsubscribe = subscribeInstallPrompt(setDeferredPrompt);
 
     const handleAppInstalled = () => {
       setIsInstalled(true);
-      setDeferredPrompt(null);
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
+      unsubscribe();
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
@@ -44,13 +44,12 @@ function InstallAppButton() {
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
 
-    deferredPrompt.prompt();
+    // Take the captured prompt (hides the button immediately) and show
+    // the browser's native install dialog.
+    const prompt = consumeInstallPrompt();
 
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      setDeferredPrompt(null);
-    }
+    await prompt.prompt();
+    await prompt.userChoice;
   };
 
   // Already installed, or not installable yet — hide the button.
